@@ -1,7 +1,7 @@
 package com.slava.theapp.di.component;
 import com.slava.theapp.di.PerActivity;
 import com.slava.theapp.di.module.ActivityModule;
-import com.slava.theapp.hello.HelloActivity;
+import com.slava.theapp.ui.hello.HelloActivity;
 
 import dagger.Component;
 

@@ -1,21 +1,18 @@
-package com.slava.theapp.hello;
+package com.slava.theapp.ui.hello;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.widget.TextView;
 
+import com.rx2androidnetworking.Rx2AndroidNetworking;
 import com.slava.theapp.R;
+import com.slava.theapp.di.module.ActivityModule;
 import com.slava.theapp.ui.base.BaseActivity;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-/**
- * Created by slava on 25.09.17.
- */
 
 public class HelloActivity extends BaseActivity implements HelloMvp.View {
 
@@ -34,60 +31,8 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
         getActivityComponent().inject(this);
 
         setUnBinder(ButterKnife.bind(this));
-
         mPresenter.onAttach(HelloActivity.this);
     }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void openActivityOnTokenExpire() {
-
-    }
-
-    @Override
-    public void onError(@StringRes int resId) {
-
-    }
-
-    @Override
-    public void onError(String message) {
-
-    }
-
-    @Override
-    public void showMessage(String message) {
-
-    }
-
-    @Override
-    public void showMessage(@StringRes int resId) {
-
-    }
-
-    @Override
-    public boolean isNetworkConnected() {
-        return false;
-    }
-
-    @Override
-    public void hideKeyboard() {
-
-    }
-
-    @Override
-    public void showError(String error) {
-
-    }
-
     @Override
     protected void setUp() {
 
@@ -98,4 +43,13 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
         mPresenter.onDetach();
         super.onDestroy();
     }
+
+    @Override
+    public void showError(String error) {
+        if(!isNetworkConnected()){
+            textView.setText(error);
+        } else {textView.setText("Connection is OK");}
+    }
+
+
 }

@@ -6,8 +6,8 @@ import android.support.v7.widget.LinearLayoutManager;
 
 import com.slava.theapp.di.ActivityContext;
 import com.slava.theapp.di.PerActivity;
-import com.slava.theapp.hello.HelloMvp;
-import com.slava.theapp.hello.HelloPresenter;
+import com.slava.theapp.ui.hello.HelloMvp;
+import com.slava.theapp.ui.hello.HelloPresenter;
 import com.slava.theapp.util.rx.AppRxSchedulers;
 import com.slava.theapp.util.rx.SchedulerProvider;
 

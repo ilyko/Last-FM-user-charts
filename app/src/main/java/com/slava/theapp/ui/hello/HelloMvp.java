@@ -1,4 +1,4 @@
-package com.slava.theapp.hello;
+package com.slava.theapp.ui.hello;
 
 import com.slava.theapp.ui.base.MvpPresenter;
 import com.slava.theapp.ui.base.MvpView;

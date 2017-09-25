@@ -1,10 +1,8 @@
-package com.slava.theapp.hello;
+package com.slava.theapp.ui.hello;
 
-import com.androidnetworking.error.ANError;
 import com.slava.theapp.data.DataManager;
 import com.slava.theapp.model.Person;
 import com.slava.theapp.ui.base.BasePresenter;
-import com.slava.theapp.ui.base.MvpView;
 import com.slava.theapp.util.rx.SchedulerProvider;
 
 import javax.inject.Inject;
