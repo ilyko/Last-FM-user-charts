@@ -5,6 +5,8 @@ ext {
     picassoVersion = '2.5.2'
     picassoDownloaderVersion = '1.0.2'
 
+
+    retrofitVersion = "2.3.0"
     supportLibraryVersion = '26.1.0'
     googlePlayVersion = '11.4.0'
     rxjavaVersion = '2.1.1'

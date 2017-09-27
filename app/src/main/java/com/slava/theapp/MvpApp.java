@@ -2,53 +2,35 @@
 
 package com.slava.theapp;
 
+import android.app.Activity;
 import android.app.Application;
 
 
-import com.androidnetworking.AndroidNetworking;
-import com.slava.theapp.data.DataManager;
-import com.slava.theapp.di.component.ApplicationComponent;
-import com.slava.theapp.di.component.DaggerApplicationComponent;
-import com.slava.theapp.di.module.ApplicationModule;
-import com.androidnetworking.interceptors.HttpLoggingInterceptor.Level;
+import com.slava.theapp.di2android.DaggerAppComponent;
 
 import javax.inject.Inject;
 
-public class MvpApp extends Application {
+import dagger.android.AndroidInjector;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.HasActivityInjector;
+
+public class MvpApp extends Application implements HasActivityInjector{
 
     @Inject
-    DataManager mDataManager;
-
-   /* @Inject
-    CalligraphyConfig mCalligraphyConfig;*/
-
-    private ApplicationComponent mApplicationComponent;
+    DispatchingAndroidInjector<Activity> dispatchingAndroidInjector;
 
     @Override
     public void onCreate() {
         super.onCreate();
-
-        mApplicationComponent = DaggerApplicationComponent.builder()
-                .applicationModule(new ApplicationModule(this)).build();
-
-        mApplicationComponent.inject(this);
-
-
-        AndroidNetworking.initialize(getApplicationContext());
-        if (BuildConfig.DEBUG) {
-            AndroidNetworking.enableLogging(Level.BODY);
-        }
-
-        /*CalligraphyConfig.initDefault(mCalligraphyConfig);*/
+        DaggerAppComponent
+                .builder()
+                .application(this)
+                .build()
+                .inject(this);
     }
 
-    public ApplicationComponent getComponent() {
-        return mApplicationComponent;
-    }
-
-
-    // Needed to replace the component with a test specific one
-    public void setComponent(ApplicationComponent applicationComponent) {
-        mApplicationComponent = applicationComponent;
+    @Override
+    public AndroidInjector<Activity> activityInjector() {
+        return dispatchingAndroidInjector;
     }
 }

@@ -1,6 +1,5 @@
 package com.slava.theapp.ui.hello;
 
-import com.slava.theapp.ui.base.MvpPresenter;
 import com.slava.theapp.ui.base.MvpView;
 
 public interface HelloMvp {
@@ -13,7 +12,7 @@ public interface HelloMvp {
     }
 
     /** Represents the Presenter in MVP. */
-    interface Presenter<V extends View> extends MvpPresenter<V> {
+    interface Presenter {
         void loadMessage();
 
         void saveName(String firstName, String lastName);
