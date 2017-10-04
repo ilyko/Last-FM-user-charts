@@ -1,0 +1,85 @@
+package com.slava.theapp.ui.base;
+
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
+/**
+ * Created by slava on 03.10.17.
+ */
+
+public abstract class BaseFragment extends Fragment{
+    protected String TAG = "" + getClass().getName();
+    private Unbinder unbinder;
+
+    public BaseFragment() {
+        setArguments(new Bundle());
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(getLayout(), container, false);
+        unbinder = ButterKnife.bind(this, view);
+        return view;
+    }
+
+    public abstract int getLayout();
+
+    public abstract <T extends BaseActivity> T getAct();
+
+    @Override
+    public void onDestroyView() {
+        unbinder.unbind();
+        super.onDestroyView();
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saveValue(outState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        restoreValue(getArguments());
+    }
+
+    @Override
+    public void onPause() {
+        saveValue(getArguments());
+        super.onPause();
+
+    }
+
+    protected void saveValue(Bundle outState) {
+    }
+
+    protected void restoreValue(Bundle outState) {
+    }
+
+    public void setBundle(Bundle bundle) {
+        Bundle arguments = getArguments();
+        arguments.clear();
+        arguments.putAll(bundle);
+    }
+
+    public void onBack() {
+        getAct().getSupportFragmentManager().popBackStack();
+    }
+
+}

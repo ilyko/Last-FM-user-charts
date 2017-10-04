@@ -13,7 +13,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.slava.theapp.MvpApp;
 import com.slava.theapp.R;
 import com.slava.theapp.ui.base.BaseActivity;
 import com.slava.theapp.util.LogUtil;
@@ -22,7 +21,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import dagger.android.AndroidInjection;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, MainMvp.View {
@@ -39,26 +37,24 @@ public class MainActivity extends BaseActivity
     FloatingActionButton fab;
 
     @Inject
-    MainPresenter presenter;
+    TopArtistsFragment topArtistsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        presenter.getSummoner();
+        fab.setOnClickListener(
+                view -> Snackbar.make(view, "Replace with your own action",
+                        Snackbar.LENGTH_LONG).setAction("Action", null).show());
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+        if (savedInstanceState == null) {
+            addFragment(R.id.constraint_layout_main, topArtistsFragment);
+        }
     }
 
     @Override

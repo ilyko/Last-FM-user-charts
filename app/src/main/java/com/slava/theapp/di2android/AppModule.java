@@ -2,6 +2,7 @@ package com.slava.theapp.di2android;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.slava.theapp.MvpApp;
 import com.slava.theapp.ui.main.MainActivity;
 import com.slava.theapp.util.rx.AppRxSchedulers;
@@ -17,4 +18,6 @@ public class AppModule {
     @Provides
     SchedulerProvider getSchedulerProvider(){return new AppRxSchedulers();}
 
+    @Provides
+    Gson provideGson(){return new Gson();}
 }

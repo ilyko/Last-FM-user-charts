@@ -15,6 +15,6 @@ public interface MainMvp {
     /** Represents the Presenter in MVP. */
     interface Presenter {
         void getSummoner();
-        void doNothing();
+        void getTopTracks();
     }
 }

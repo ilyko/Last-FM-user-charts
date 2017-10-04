@@ -12,4 +12,5 @@ public class ActivityModule {
 
     @Provides
     CompositeDisposable provideCompositeDisposable(){return new CompositeDisposable();}
+
 }

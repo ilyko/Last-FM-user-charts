@@ -10,6 +10,9 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "API_ENDPOINT", '"http://ws.audioscrobbler.com/2.0/"'
+        buildConfigField "String", "API_KEY", '"7793fae26b119e636f646bd2094ebcfa"'
     }
     buildTypes {
         release {
@@ -42,7 +45,6 @@ dependencies {
     compile "com.google.dagger:dagger-android:$dagger2Version"
     compile "com.google.dagger:dagger-android-support:$dagger2Version"
     annotationProcessor "com.google.dagger:dagger-android-processor:$dagger2Version"
-    provided 'javax.annotation:jsr250-api:1.0'
     // RxJava
     compile "io.reactivex.rxjava2:rxandroid:${rxandroidVersion}"
     compile "io.reactivex.rxjava2:rxjava:${rxjavaVersion}"
@@ -61,10 +63,13 @@ dependencies {
     compile "com.squareup.retrofit2:converter-gson:${retrofitVersion}"
     compile "com.squareup.retrofit2:adapter-rxjava2:${retrofitVersion}"
 
+    //Glide
+    compile "com.github.bumptech.glide:glide:${glideVersion}"
+    annotationProcessor "com.github.bumptech.glide:compiler:${glideVersion}"
+
     //support
     compile "com.android.support:appcompat-v7:${supportLibraryVersion}"
     compile "com.android.support:cardview-v7:${supportLibraryVersion}"
-
     compile "com.android.support:support-vector-drawable:${supportLibraryVersion}"
     compile "com.android.support:support-v4:${supportLibraryVersion}"
     compile "com.android.support:recyclerview-v7:${supportLibraryVersion}"
@@ -74,6 +79,8 @@ dependencies {
     compile "com.android.support:gridlayout-v7:${supportLibraryVersion}"
     compile "com.android.support:palette-v7:${supportLibraryVersion}"
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support:support-v4:26.+'
     testCompile 'junit:junit:4.12'
+    provided 'javax.annotation:jsr250-api:1.0'
 }
 apply plugin: 'com.google.gms.google-services'

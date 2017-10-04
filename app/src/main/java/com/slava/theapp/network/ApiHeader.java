@@ -3,12 +3,6 @@ package com.slava.theapp.network;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by slava on 27.09.17.
- */
-
-
-
 @Singleton
 public class ApiHeader {
     public String getToken() {

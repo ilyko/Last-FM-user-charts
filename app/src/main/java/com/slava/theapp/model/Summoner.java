@@ -20,7 +20,7 @@ public class Summoner {
     private Integer profileIconId;
     @SerializedName("revisionDate")
     @Expose
-    private Integer revisionDate;
+    private Long revisionDate;
     @SerializedName("summonerLevel")
     @Expose
     private Integer summonerLevel;
@@ -57,11 +57,11 @@ public class Summoner {
         this.profileIconId = profileIconId;
     }
 
-    public Integer getRevisionDate() {
+    public Long getRevisionDate() {
         return revisionDate;
     }
 
-    public void setRevisionDate(Integer revisionDate) {
+    public void setRevisionDate(Long revisionDate) {
         this.revisionDate = revisionDate;
     }
 

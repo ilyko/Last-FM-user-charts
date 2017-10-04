@@ -8,6 +8,7 @@ import com.slava.theapp.util.rx.SchedulerProvider;
 import javax.inject.Inject;
 
 import io.reactivex.disposables.CompositeDisposable;
+import okhttp3.OkHttpClient;
 
 /**
  * Base class that implements the Presenter interface and provides a base implementation for

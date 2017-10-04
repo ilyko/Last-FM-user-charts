@@ -1,11 +1,18 @@
 package com.slava.theapp.ui.base;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 
 import android.support.annotation.StringRes;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import com.slava.theapp.util.NetworkUtils;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 import butterknife.Unbinder;
 import dagger.android.AndroidInjection;
@@ -13,7 +20,6 @@ import dagger.android.AndroidInjection;
 
 public abstract class BaseActivity extends AppCompatActivity
         implements MvpView {
-
 
     private Unbinder mUnBinder;
 
@@ -37,6 +43,13 @@ public abstract class BaseActivity extends AppCompatActivity
         }
         super.onDestroy();
     }
+
+    protected final void addFragment(@IdRes int containerViewId, Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .add(containerViewId, fragment)
+                .commitAllowingStateLoss();
+    }
+
 
     protected abstract void setUp();
 
