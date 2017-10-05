@@ -30,7 +30,6 @@ public class NetworkClient {
 
     @Inject
     public NetworkClient(){
-        //init();
         try {
             initBaseUrl(BuildConfig.API_ENDPOINT);
         } catch (Exception e) {
@@ -39,24 +38,7 @@ public class NetworkClient {
     }
 
     private void init() {
-        httpClient = new OkHttpClient
-                .Builder()
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30,TimeUnit.SECONDS)
-                .addInterceptor(chain -> {
-            Request original = chain.request();
-            HttpUrl originalHttpUrl = original.url();
 
-            HttpUrl url1 = originalHttpUrl.newBuilder()
-                    .addQueryParameter("api_key", BuildConfig.API_KEY)
-                    .build();
-
-            Request.Builder requestBuilder = original.newBuilder()
-                    .url(url1);
-
-            Request request = requestBuilder.build();
-            return chain.proceed(request);
-        }).build();
     }
 
     public void initBaseUrl(@NonNull String url) throws Exception {
@@ -81,6 +63,7 @@ public class NetworkClient {
                     Request request = requestBuilder.build();
                     return chain.proceed(request);
                 }).build();
+
         retrofit = new Retrofit.Builder()
                 .baseUrl(this.url)
                 .client(httpClient)

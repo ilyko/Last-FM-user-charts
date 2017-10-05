@@ -5,14 +5,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 
 import com.slava.theapp.R;
+import com.slava.theapp.model.Artist;
 import com.slava.theapp.ui.base.BaseActivity;
 import com.slava.theapp.ui.base.BaseFragment;
+import com.slava.theapp.util.LogUtil;
 
 import javax.inject.Inject;
 
@@ -34,18 +34,19 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
     }
 
 
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        topArtistsAdapter = new TopArtistsAdapter();
+        LogUtil.info(this,"hello: "+presenter);
+        topArtistsAdapter = new TopArtistsAdapter(presenter);
         mRecyclerView.setAdapter(topArtistsAdapter);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        presenter.getTopArtists();
     }
 
     @Override
@@ -59,12 +60,7 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
     }
 
     @Override
-    public void setArtistName(String name) {
-
-    }
-
-    @Override
-    public void setArtistImage(String path) {
+    public void setArtist(Artist artist) {
 
     }
 }
