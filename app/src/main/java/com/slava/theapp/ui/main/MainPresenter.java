@@ -20,11 +20,6 @@ public class MainPresenter extends BasePresenter implements MainMvp.Presenter{
     public MainPresenter(){
     }
 
-    @Inject
-    protected SchedulerProvider schedulerProvider;
-    @Inject
-    protected CompositeDisposable compositeDisposable;
-
     @Override
     public void getSummoner() {
         compositeDisposable.add(networkClient

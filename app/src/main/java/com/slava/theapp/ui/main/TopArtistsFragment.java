@@ -40,7 +40,7 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         LogUtil.info(this,"hello: "+presenter);
-        topArtistsAdapter = new TopArtistsAdapter(presenter);
+        topArtistsAdapter = new TopArtistsAdapter();
         mRecyclerView.setAdapter(topArtistsAdapter);
     }
 
