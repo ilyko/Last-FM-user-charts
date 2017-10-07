@@ -10,13 +10,16 @@ import android.view.View;
 
 import com.slava.theapp.R;
 import com.slava.theapp.model.Artist;
+import com.slava.theapp.network.NetworkClient;
 import com.slava.theapp.ui.base.BaseActivity;
 import com.slava.theapp.ui.base.BaseFragment;
 import com.slava.theapp.util.LogUtil;
+import com.slava.theapp.util.rx.SchedulerProvider;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import io.reactivex.disposables.CompositeDisposable;
 
 public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.View{
 
@@ -30,6 +33,13 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
     TopArtistsPresenter presenter;
 
     @Inject
+    CompositeDisposable compositeDisposable;
+    @Inject
+    NetworkClient networkClient;
+    @Inject
+    SchedulerProvider schedulerProvider;
+
+    @Inject
     public TopArtistsFragment() {
     }
 
@@ -40,7 +50,7 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         LogUtil.info(this,"hello: "+presenter);
-        topArtistsAdapter = new TopArtistsAdapter();
+        topArtistsAdapter = new TopArtistsAdapter(compositeDisposable,schedulerProvider,networkClient);
         mRecyclerView.setAdapter(topArtistsAdapter);
     }
 

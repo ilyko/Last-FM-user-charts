@@ -30,11 +30,6 @@ public class TopArtistsPresenter extends BasePresenter implements TopArtistsMvp.
     public TopArtistsPresenter(){
     }
 
-    @Inject
-    protected SchedulerProvider schedulerProvider;
-    @Inject
-    protected CompositeDisposable compositeDisposable;
-
     @Override
     public void getTopArtists() {
         LogUtil.info(this,"hello");
