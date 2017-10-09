@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -20,6 +21,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.disposables.CompositeDisposable;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 /**
  * Created by slava on 04.10.17.
@@ -88,7 +90,7 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     .subscribeOn(schedulerProvider.io())
                     .subscribe(
                             response -> handleResponse(response.getArtists().getArtist()),
-                            Throwable::printStackTrace
+                            (throwable) -> throwable.printStackTrace()
                     ));
         }
     }
@@ -110,9 +112,10 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     public class EmptyViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.text_name)
-        TextView tvName;
-
+/*        @BindView(R.id.text_name)
+        TextView tvName;*/
+        @BindView(R.id.progress)
+        ProgressBar progressBar;
         public EmptyViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
@@ -133,14 +136,20 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         @Override
         public void setArtist(Artist artist) {
             tvName.setText(getAdapterPosition()+1+": "+artist.getName());
+            tvName.requestLayout();
+
             String path = null;
         for (int i = 0; i < artist.getImage().size(); i++) {
-            path = artist.getImage().get(2).getText();
+            path = artist.getImage().get(i).getText();
             if (!TextUtils.isEmpty(path)) break;
         }
-            if (TextUtils.isEmpty(path)) return;
+            if (TextUtils.isEmpty(path)) {
+                imageView.setImageDrawable(null);
+                return;
+            }
             Glide.with(tvName.getContext())
                     .load(path)
+                    .bitmapTransform(new CropCircleTransformation(tvName.getContext()))
                     .into(imageView);
         }
 
