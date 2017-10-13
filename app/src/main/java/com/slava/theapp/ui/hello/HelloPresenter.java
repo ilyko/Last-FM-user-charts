@@ -10,12 +10,12 @@ public class HelloPresenter extends BasePresenter implements
 
 
     @Inject
-    public HelloPresenter(){}
+    public HelloPresenter() {
+    }
 
 
     @Override
     public void loadMessage() {
-
     }
 
     @Override

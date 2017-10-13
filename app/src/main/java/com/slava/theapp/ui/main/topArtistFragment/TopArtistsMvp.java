@@ -1,9 +1,10 @@
-package com.slava.theapp.ui.main;
+package com.slava.theapp.ui.main.topArtistFragment;
 
-import android.support.v7.widget.RecyclerView;
 
 import com.slava.theapp.model.Artist;
-import com.slava.theapp.ui.base.MvpView;
+
+
+import java.util.List;
 
 /**
  * Created by slava on 04.10.17.
@@ -12,13 +13,12 @@ import com.slava.theapp.ui.base.MvpView;
 public interface TopArtistsMvp {
     interface View{
         void setArtist(Artist artist);
+        void handleResponse(List<Artist> artists);
     }
 
     /** Represents the Presenter in MVP. */
     interface Presenter {
-        void getTopArtists();
-        int getTopArtistsCount();
-        void onBindTopArtists(int position, TopArtistsMvp.View holder);
+        void getTopArtists(int perPage, int pageCount);
     }
 
 }

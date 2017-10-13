@@ -1,25 +1,26 @@
 package com.slava.theapp.ui.hello;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.OptionalPendingResult;
-import com.google.android.gms.common.api.ResultCallback;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.slava.theapp.R;
 import com.slava.theapp.ui.base.BaseActivity;
+import com.slava.theapp.ui.main.MainActivity;
+import com.slava.theapp.util.Const;
 import com.slava.theapp.util.LogUtil;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.disposables.CompositeDisposable;
+import butterknife.OnClick;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class HelloActivity extends BaseActivity implements HelloMvp.View {
 
@@ -28,9 +29,12 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
 
     public static int LAYOUT =R.layout.activity_hello;
 
-    @BindView(R.id.text_hello)
-    TextView mStatusTextView;
-
+    @BindView(R.id.etName)
+    TextView etName;
+    @BindView(R.id.etPassword)
+    TextView etPassword;
+    @BindView(R.id.btnLogin)
+    Button mButton;
     @Inject
     HelloPresenter presenter;
 
@@ -38,9 +42,20 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setUnBinder(ButterKnife.bind(this));
-        presenter.loadMessage();
+        Observable.combineLatest(
+                RxTextView.textChanges(etName),
+                RxTextView.textChanges(etPassword),
+                (charSequence, charSequence2) -> charSequence.length()>0 && charSequence2.length()>0)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(is -> mButton.setEnabled(is));
     }
 
+
+    @OnClick(R.id.btnLogin)
+    public void submit(View view) {
+        openMainActivity();
+    }
     @Override
     protected void onStart() {
         super.onStart();
@@ -64,10 +79,14 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
 
     @Override
     public void showError(String error) {
-        if(!isNetworkConnected()){
-            mStatusTextView.setText(error);
-        } else {
-            mStatusTextView.setText("Connection is OK");}
+    }
+
+    @Override
+    public void openMainActivity() {
+        Intent intent = new Intent(HelloActivity.this, MainActivity.class);
+        intent.putExtra(Const.USER_INTENT,etName.getText().toString());
+        LogUtil.info(this,"send user: "+etName.getText());
+        startActivity(intent);
     }
 
 

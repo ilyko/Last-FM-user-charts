@@ -7,14 +7,13 @@ public interface HelloMvp {
     /** Represents the View in MVP. */
     interface View extends MvpView{
         void showMessage(String message);
-
         void showError(String error);
+        void openMainActivity();
     }
 
     /** Represents the Presenter in MVP. */
     interface Presenter {
         void loadMessage();
-
         void saveName(String firstName, String lastName);
     }
 }

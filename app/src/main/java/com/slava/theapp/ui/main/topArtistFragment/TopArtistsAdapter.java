@@ -1,4 +1,4 @@
-package com.slava.theapp.ui.main;
+package com.slava.theapp.ui.main.topArtistFragment;
 
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -12,35 +12,40 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.slava.theapp.R;
 import com.slava.theapp.model.Artist;
-import com.slava.theapp.network.NetworkClient;
 import com.slava.theapp.util.LogUtil;
-import com.slava.theapp.util.rx.SchedulerProvider;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.disposables.CompositeDisposable;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 /**
  * Created by slava on 04.10.17.
  */
 
-public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Artist> mArtists;
     private int page = 0;
     private boolean isRequest = false;
-    NetworkClient networkClient;
+    TopArtistsMvp.Presenter presenter;
+/*    NetworkClient networkClient;
     protected SchedulerProvider schedulerProvider;
-    protected CompositeDisposable compositeDisposable;
+    protected CompositeDisposable compositeDisposable;*/
 
-    public TopArtistsAdapter(CompositeDisposable compositeDisposable, SchedulerProvider schedulerProvider, NetworkClient networkClient) {
+/*    public TopArtistsAdapter(CompositeDisposable compositeDisposable, SchedulerProvider schedulerProvider, NetworkClient networkClient) {
         this.networkClient = networkClient;
         this.compositeDisposable = compositeDisposable;
         this.schedulerProvider = schedulerProvider;
         this.mArtists = new ArrayList<>();
+    }*/
+
+    public TopArtistsAdapter(TopArtistsMvp.Presenter presenter) {
+        this.presenter = presenter;
+        this.mArtists = new ArrayList<>();
+        LogUtil.info(this, "presenter:"+presenter+" this.presenter"+this.presenter);
     }
 
 
@@ -83,19 +88,20 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         if (!isRequest && (mArtists.size()==0 || position==mArtists.size()-1)) {
             page++;
             isRequest = true;
-            compositeDisposable.add(networkClient
+            presenter.getTopArtists(30,page);
+            /*compositeDisposable.add(networkClient
                     .getApi()
-                    .getUserTopArtists(30,page)
+                    .getUserTopArtists(30,page, "ilyko17")
                     .observeOn(schedulerProvider.ui())
                     .subscribeOn(schedulerProvider.io())
                     .subscribe(
                             response -> handleResponse(response.getArtists().getArtist()),
                             (throwable) -> throwable.printStackTrace()
-                    ));
+                    ));*/
         }
     }
 
-    private void handleResponse(List<Artist> artists) {
+    public void handleResponse(List<Artist> artists) {
         mArtists.addAll(artists);
         LogUtil.info(this,"size:"+mArtists.size());
         notifyDataSetChanged();
@@ -151,6 +157,14 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     .load(path)
                     .bitmapTransform(new CropCircleTransformation(tvName.getContext()))
                     .into(imageView);
+        }
+
+        @Override
+        public void handleResponse(List<Artist> artists) {
+            mArtists.addAll(artists);
+            LogUtil.info(this,"size:"+mArtists.size());
+            notifyDataSetChanged();
+            isRequest = false;
         }
 
         @Override

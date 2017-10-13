@@ -15,22 +15,16 @@ public class MainPresenter extends BasePresenter implements MainMvp.Presenter{
 
     @Inject
     NetworkClient networkClient;
+    MainMvp.View mainView;
 
     @Inject
-    public MainPresenter(){
+    public MainPresenter(MainMvp.View mainView){
+        this.mainView = mainView;
     }
 
     @Override
     public void getSummoner() {
-        compositeDisposable.add(networkClient
-                .getApi()
-                .getSummoner(Const.API_KEY)
-                .observeOn(schedulerProvider.ui())
-                .subscribeOn(schedulerProvider.io())
-                .subscribe(
-                        //this::handleResponse,
-                        //Throwable::printStackTrace
-                ));
+
     }
 
     @Override
@@ -45,8 +39,4 @@ public class MainPresenter extends BasePresenter implements MainMvp.Presenter{
                 ));
     }
 
-
-    private void handleResponse(TopArtists response) {
-        LogUtil.info(this, "response" + response.toString());
-    }
 }

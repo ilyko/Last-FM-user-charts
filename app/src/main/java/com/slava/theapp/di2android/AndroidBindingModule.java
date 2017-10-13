@@ -1,13 +1,10 @@
 package com.slava.theapp.di2android;
 
 import com.slava.theapp.ui.hello.HelloActivity;
-import com.slava.theapp.ui.hello.HelloMvp;
 import com.slava.theapp.ui.main.MainActivity;
-import com.slava.theapp.ui.main.MainMvp;
-import com.slava.theapp.ui.main.TopArtistsMvp;
-import com.slava.theapp.ui.main.TopArtistsFragment;
+import com.slava.theapp.ui.main.MainActivityModule;
+import com.slava.theapp.ui.main.TopArtistFragmentProvider;
 
-import dagger.Binds;
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
 
@@ -17,18 +14,15 @@ public abstract class AndroidBindingModule {
     @ContributesAndroidInjector(modules = {ActivityModule.class})
     abstract HelloActivity bindHelloActivity();
 
-    @ContributesAndroidInjector(modules = {ActivityModule.class})
+    @ContributesAndroidInjector(modules = {ActivityModule.class, MainActivityModule.class, TopArtistFragmentProvider.class})
     abstract MainActivity bindMainActivity();
 
-    @ContributesAndroidInjector(modules = {ActivityModule.class})
-    abstract TopArtistsFragment bindTopArtistsFragment();
-
-    @Binds
+/*    @Binds
     abstract MainMvp.View bindMainActivity(MainActivity mainActivity);
 
     @Binds
     abstract HelloMvp.View bindHelloActivity(HelloActivity helloActivity);
 
     @Binds
-    abstract TopArtistsMvp.View bindTopArtistsFragment(TopArtistsFragment topArtistsFragment);
+    abstract TopArtistsMvp.View bindTopArtistsFragment(TopArtistsFragment topArtistsFragment);*/
 }

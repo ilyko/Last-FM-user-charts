@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.view.View;
+import android.support.v4.app.Fragment;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -15,17 +15,26 @@ import android.view.MenuItem;
 
 import com.slava.theapp.R;
 import com.slava.theapp.ui.base.BaseActivity;
-import com.slava.theapp.util.LogUtil;
+import com.slava.theapp.ui.main.topArtistFragment.TopArtistsFragment;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.android.AndroidInjector;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.support.HasSupportFragmentInjector;
 
 public class MainActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, MainMvp.View {
+        implements NavigationView.OnNavigationItemSelectedListener, MainMvp.View, HasSupportFragmentInjector {
 
     public static int LAYOUT = R.layout.activity_main;
+
+
+    @Inject
+    DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
+
+
 
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
@@ -35,9 +44,6 @@ public class MainActivity extends BaseActivity
     NavigationView navigationView;
     @BindView(R.id.fab)
     FloatingActionButton fab;
-
-    @Inject
-    TopArtistsFragment topArtistsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +59,7 @@ public class MainActivity extends BaseActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
         if (savedInstanceState == null) {
-            addFragment(R.id.constraint_layout_main, topArtistsFragment);
+            addFragment(R.id.constraint_layout_main, TopArtistsFragment.newInstance());
         }
     }
 
@@ -166,5 +172,10 @@ public class MainActivity extends BaseActivity
     @Override
     public int getLayout() {
         return LAYOUT;
+    }
+
+    @Override
+    public AndroidInjector<Fragment> supportFragmentInjector() {
+        return fragmentDispatchingAndroidInjector;
     }
 }

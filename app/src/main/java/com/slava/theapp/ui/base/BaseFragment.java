@@ -72,6 +72,8 @@ public abstract class BaseFragment extends Fragment{
     protected void restoreValue(Bundle outState) {
     }
 
+
+
     public void setBundle(Bundle bundle) {
         Bundle arguments = getArguments();
         arguments.clear();
