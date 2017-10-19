@@ -42,13 +42,19 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setUnBinder(ButterKnife.bind(this));
-        Observable.combineLatest(
+/*        Observable.combineLatest(
                 RxTextView.textChanges(etName),
                 RxTextView.textChanges(etPassword),
                 (charSequence, charSequence2) -> charSequence.length()>0 && charSequence2.length()>0)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(is -> mButton.setEnabled(is));
+                .subscribe(is -> mButton.setEnabled(is));*/
+        RxTextView
+                .textChanges(etName)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(is -> mButton.setEnabled(is.length()>0));
+
     }
 
 
