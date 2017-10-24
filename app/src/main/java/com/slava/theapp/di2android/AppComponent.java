@@ -9,12 +9,14 @@ import javax.inject.Singleton;
 import dagger.BindsInstance;
 import dagger.Component;
 import dagger.android.support.AndroidSupportInjectionModule;
+import io.realm.Realm;
 
 
 @Singleton
 @Component(
         modules = {
                 AndroidSupportInjectionModule.class,
+                DatabaseModule.class,
                 AppModule.class,
                 AndroidBindingModule.class
         }
@@ -28,6 +30,7 @@ public interface AppComponent {
         @BindsInstance
         Builder application(Application application);
         AppComponent build();
+
     }
     void inject(MvpApp mvpApp);
 }

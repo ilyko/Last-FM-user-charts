@@ -1,6 +1,5 @@
 package com.slava.theapp.ui.main;
 
-import com.slava.theapp.network.NetworkApi;
 
 import dagger.Module;
 import dagger.Provides;

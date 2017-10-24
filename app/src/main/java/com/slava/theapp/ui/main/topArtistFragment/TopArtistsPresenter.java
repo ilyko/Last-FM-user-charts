@@ -3,7 +3,6 @@ package com.slava.theapp.ui.main.topArtistFragment;
 
 import com.slava.theapp.network.NetworkClient;
 import com.slava.theapp.ui.base.BasePresenter;
-import com.slava.theapp.util.LogUtil;
 
 import javax.inject.Inject;
 
@@ -31,8 +30,6 @@ public class TopArtistsPresenter extends BasePresenter implements TopArtistsMvp.
 
     @Override
     public void getTopArtists(int perPage, int pageCount) {
-        LogUtil.info(this,"hello");
-        LogUtil.info(this,"view: "+view);
         compositeDisposable.add(networkClient
                 .getApi()
                 .getUserTopArtists(perPage, pageCount, user)
@@ -40,15 +37,22 @@ public class TopArtistsPresenter extends BasePresenter implements TopArtistsMvp.
                 .subscribeOn(schedulerProvider.io())
                 .subscribe(
                         response -> view.handleResponse(response.getArtists().getArtist()),// handleResponse(response.getArtists().getArtist()),
-                        (throwable) -> throwable.printStackTrace()
+                        Throwable::printStackTrace
                 ));
     }
 
-
-/*    private void handleResponse(List<Artist> topArtists) {
-        this.topArtists = topArtists;
-        LogUtil.info(this, "hello Response: "+this.topArtists.size());
-    }*/
+    @Override
+    public void updateTopArtist(){
+        compositeDisposable.add(networkClient
+                .getApi()
+                .getUserTopArtists(30, 1, user)
+                .observeOn(schedulerProvider.ui())
+                .subscribeOn(schedulerProvider.io())
+                .subscribe(
+                        response -> view.handleUpdateResponse(response.getArtists().getArtist()),// handleResponse(response.getArtists().getArtist()),
+                        Throwable::printStackTrace
+                ));
+    }
 }
 
 

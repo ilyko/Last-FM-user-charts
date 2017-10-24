@@ -64,6 +64,11 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
+    protected void closeRealm() {
+
+    }
+
+    @Override
     protected void setUp() {
 
     }

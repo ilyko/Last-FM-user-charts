@@ -4,11 +4,12 @@ package com.slava.theapp.ui.main.topArtistFragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-
+import com.jakewharton.rxbinding2.support.v4.widget.RxSwipeRefreshLayout;
 import com.slava.theapp.R;
 import com.slava.theapp.model.Artist;
 import com.slava.theapp.network.NetworkClient;
@@ -27,11 +28,12 @@ import dagger.android.support.AndroidSupportInjection;
 import io.reactivex.disposables.CompositeDisposable;
 
 public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.View{
-
     protected TopArtistsAdapter topArtistsAdapter;
 
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
+    @BindView(R.id.swipeContainer)
+    SwipeRefreshLayout swipeContainer;
 
     @Inject
     TopArtistsPresenter presenter;
@@ -60,10 +62,17 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
         user = getActivity().getIntent().getStringExtra(Const.USER_INTENT);
         LogUtil.info(this, "user:"+ user);
         presenter.setUserId(user);
+        RxSwipeRefreshLayout
+                .refreshes(swipeContainer)
+                .subscribe(v -> presenter.updateTopArtist());
         topArtistsAdapter = new TopArtistsAdapter(presenter);
-
         mRecyclerView.setAdapter(topArtistsAdapter);
+    }
 
+    private void refreshContent(){
+                topArtistsAdapter = new TopArtistsAdapter(presenter);
+                mRecyclerView.setAdapter(topArtistsAdapter);
+                swipeContainer.setRefreshing(false);
     }
 
     @Override
@@ -96,4 +105,15 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
     public void handleResponse(List<Artist> artists){
         topArtistsAdapter.handleResponse(artists);
     }
+
+    @Override
+    public void handleUpdateResponse(List<Artist> artists) {
+        topArtistsAdapter.handleUpdateResponse(artists);
+        try {
+            RxSwipeRefreshLayout.refreshing(swipeContainer).accept(false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

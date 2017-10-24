@@ -37,7 +37,7 @@ public abstract class BaseActivity extends AppCompatActivity
 
     @Override
     protected void onDestroy() {
-
+        closeRealm();
         if (mUnBinder != null) {
             mUnBinder.unbind();
         }
@@ -50,7 +50,7 @@ public abstract class BaseActivity extends AppCompatActivity
                 .commitAllowingStateLoss();
     }
 
-
+    protected abstract void closeRealm();
     protected abstract void setUp();
 
     @Override

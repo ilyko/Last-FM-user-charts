@@ -10,6 +10,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.jakewharton.rxbinding2.support.v4.widget.RxSwipeRefreshLayout;
 import com.slava.theapp.R;
 import com.slava.theapp.model.Artist;
 import com.slava.theapp.util.LogUtil;
@@ -25,28 +26,20 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
  * Created by slava on 04.10.17.
  */
 
-public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements TopArtistsMvp.View {
 
     private List<Artist> mArtists;
     private int page = 0;
     private boolean isRequest = false;
-    TopArtistsMvp.Presenter presenter;
-/*    NetworkClient networkClient;
-    protected SchedulerProvider schedulerProvider;
-    protected CompositeDisposable compositeDisposable;*/
-
-/*    public TopArtistsAdapter(CompositeDisposable compositeDisposable, SchedulerProvider schedulerProvider, NetworkClient networkClient) {
-        this.networkClient = networkClient;
-        this.compositeDisposable = compositeDisposable;
-        this.schedulerProvider = schedulerProvider;
-        this.mArtists = new ArrayList<>();
-    }*/
+    private TopArtistsMvp.Presenter presenter;
 
     public TopArtistsAdapter(TopArtistsMvp.Presenter presenter) {
         this.presenter = presenter;
         this.mArtists = new ArrayList<>();
         LogUtil.info(this, "presenter:"+presenter+" this.presenter"+this.presenter);
     }
+
+
 
 
     enum TYPE {EMPTY, ARTIST}
@@ -84,28 +77,34 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         if (holder instanceof ArtistsViewHolder) {
             ((ArtistsViewHolder)holder).setArtist(mArtists.get(position));
         }
-
+        //TODO check attr - totalPages and total;
         if (!isRequest && (mArtists.size()==0 || position==mArtists.size()-1)) {
             page++;
             isRequest = true;
             presenter.getTopArtists(30,page);
-            /*compositeDisposable.add(networkClient
-                    .getApi()
-                    .getUserTopArtists(30,page, "ilyko17")
-                    .observeOn(schedulerProvider.ui())
-                    .subscribeOn(schedulerProvider.io())
-                    .subscribe(
-                            response -> handleResponse(response.getArtists().getArtist()),
-                            (throwable) -> throwable.printStackTrace()
-                    ));*/
         }
     }
 
+    @Override
+    public void setArtist(Artist artist) {
+    }
+
+    @Override
     public void handleResponse(List<Artist> artists) {
         mArtists.addAll(artists);
         LogUtil.info(this,"size:"+mArtists.size());
         notifyDataSetChanged();
         isRequest = false;
+    }
+
+    @Override
+    public void handleUpdateResponse(List<Artist> artists) {
+        mArtists.clear();
+        notifyDataSetChanged();
+        mArtists.addAll(artists);
+        notifyDataSetChanged();
+        isRequest = false;
+        page = 1;
     }
 
     @Override
@@ -128,7 +127,9 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-    public class ArtistsViewHolder extends RecyclerView.ViewHolder implements TopArtistsMvp.View, View.OnClickListener {
+
+
+    public class ArtistsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.text_name)
         TextView tvName;
         @BindView(R.id.image)
@@ -139,7 +140,6 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             ButterKnife.bind(this,itemView);
         }
 
-        @Override
         public void setArtist(Artist artist) {
             tvName.setText(getAdapterPosition()+1+": "+artist.getName());
             tvName.requestLayout();
@@ -159,13 +159,6 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     .into(imageView);
         }
 
-        @Override
-        public void handleResponse(List<Artist> artists) {
-            mArtists.addAll(artists);
-            LogUtil.info(this,"size:"+mArtists.size());
-            notifyDataSetChanged();
-            isRequest = false;
-        }
 
         @Override
         public void onClick(View view) {

@@ -18,7 +18,6 @@ public class MvpApp extends Application implements HasActivityInjector{
 
     @Inject
     DispatchingAndroidInjector<Activity> dispatchingAndroidInjector;
-
     @Override
     public void onCreate() {
         super.onCreate();

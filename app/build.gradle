@@ -29,8 +29,11 @@ android {
 
 }
 apply from: '../versions.gradle'
-
-
+// Realm
+apply plugin: 'realm-android'
+realm {
+    syncEnabled = true;
+}
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 /*    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -45,12 +48,14 @@ dependencies {
     compile "com.google.dagger:dagger-android:$dagger2Version"
     compile "com.google.dagger:dagger-android-support:$dagger2Version"
     annotationProcessor "com.google.dagger:dagger-android-processor:$dagger2Version"
+
     // RxJava
     compile "io.reactivex.rxjava2:rxandroid:${rxandroidVersion}"
     compile "io.reactivex.rxjava2:rxjava:${rxjavaVersion}"
     compile "com.jakewharton.rxbinding2:rxbinding:${rxbinding}"
     compile "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7:${rxbinding}"
     compile "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:${rxbinding}"
+    compile "com.jakewharton.rxbinding2:rxbinding-support-v4:${rxbinding}"
     //android networking
     compile "com.amitshekhar.android:rx2-android-networking:${rx2FastAndroidNetworking}"
     // font:
