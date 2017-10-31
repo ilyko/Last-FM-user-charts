@@ -175,6 +175,26 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
+    public void onUnknownError(String error) {
+
+    }
+
+    @Override
+    public void onTimeout() {
+
+    }
+
+    @Override
+    public void onNetworkError() {
+
+    }
+
+    @Override
+    public void onConnectionError() {
+
+    }
+
+    @Override
     public int getLayout() {
         return LAYOUT;
     }

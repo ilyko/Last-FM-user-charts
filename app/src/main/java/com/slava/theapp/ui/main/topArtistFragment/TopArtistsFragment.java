@@ -12,6 +12,7 @@ import android.view.View;
 import com.jakewharton.rxbinding2.support.v4.widget.RxSwipeRefreshLayout;
 import com.slava.theapp.R;
 import com.slava.theapp.model.Artist;
+import com.slava.theapp.model.Artists;
 import com.slava.theapp.network.NetworkClient;
 import com.slava.theapp.ui.base.BaseActivity;
 import com.slava.theapp.ui.base.BaseFragment;
@@ -44,7 +45,6 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
     NetworkClient networkClient;
     @Inject
     SchedulerProvider schedulerProvider;
-    private String user;
 
     public static TopArtistsFragment newInstance() {
         Bundle args = new Bundle();
@@ -59,7 +59,7 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         LogUtil.info(this,"hello: "+presenter);
-        user = getActivity().getIntent().getStringExtra(Const.USER_INTENT);
+        String user = getActivity().getIntent().getStringExtra(Const.USER_INTENT);
         LogUtil.info(this, "user:"+ user);
         presenter.setUserId(user);
         RxSwipeRefreshLayout
@@ -67,12 +67,6 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
                 .subscribe(v -> presenter.updateTopArtist());
         topArtistsAdapter = new TopArtistsAdapter(presenter);
         mRecyclerView.setAdapter(topArtistsAdapter);
-    }
-
-    private void refreshContent(){
-                topArtistsAdapter = new TopArtistsAdapter(presenter);
-                mRecyclerView.setAdapter(topArtistsAdapter);
-                swipeContainer.setRefreshing(false);
     }
 
     @Override
@@ -97,17 +91,12 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
     }
 
     @Override
-    public void setArtist(Artist artist) {
-
-    }
-
-    @Override
-    public void handleResponse(List<Artist> artists){
+    public void handleResponse(Artists artists){
         topArtistsAdapter.handleResponse(artists);
     }
 
     @Override
-    public void handleUpdateResponse(List<Artist> artists) {
+    public void handleUpdateResponse(Artists artists) {
         topArtistsAdapter.handleUpdateResponse(artists);
         try {
             RxSwipeRefreshLayout.refreshing(swipeContainer).accept(false);

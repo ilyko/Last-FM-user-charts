@@ -2,6 +2,8 @@ package com.slava.theapp.ui.main.topArtistFragment;
 
 
 import com.slava.theapp.model.Artist;
+import com.slava.theapp.model.Artists;
+import com.slava.theapp.model.Attr;
 
 
 import java.util.List;
@@ -12,9 +14,8 @@ import java.util.List;
 
 public interface TopArtistsMvp {
     interface View{
-        void setArtist(Artist artist);
-        void handleResponse(List<Artist> artists);
-        void handleUpdateResponse(List<Artist> artists);
+        void handleResponse(Artists artist);
+        void handleUpdateResponse(Artists artists);
     }
 
     /** Represents the Presenter in MVP. */

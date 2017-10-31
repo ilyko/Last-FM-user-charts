@@ -1,6 +1,7 @@
 package com.slava.theapp.ui.hello;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,6 +9,7 @@ import android.support.annotation.RequiresApi;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.slava.theapp.R;
@@ -35,9 +37,10 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
 
     public static int LAYOUT =R.layout.activity_hello;
 
-
     @BindView(R.id.etName)
     TextView etName;
+    @BindView(R.id.tv_error_show)
+    TextView tvError;
     @BindView(R.id.etPassword)
     TextView etPassword;
     @BindView(R.id.btnLogin)
@@ -48,17 +51,13 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
     CompositeDisposable compositeDisposable;
     @Inject
     RealmService realmService;
+    @Inject
+    SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setUnBinder(ButterKnife.bind(this));
-/*        Observable.combineLatest(
-                RxTextView.textChanges(etName),
-                RxTextView.textChanges(etPassword),
-                (charSequence, charSequence2) -> charSequence.length()>0 && charSequence2.length()>0)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(is -> mButton.setEnabled(is));*/
+        loadUserFromSharedPreferences();
         compositeDisposable.add(RxTextView
                 .textChanges(etName)
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -75,16 +74,16 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
         TestUser testUser = new TestUser();
         testUser.setName(etName.getText().toString());
         testUser.setId(testUser.hashCode());
-
         realmService.addTestUser(testUser);
-        compositeDisposable.add(realmService
+        presenter.getUserInfo(testUser.getName());
+/*        compositeDisposable.add(realmService
                 .getTestUsers()
                 .switchMap(Flowable::fromIterable)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(user -> {
                     LogUtil.info(this, "user:" + user);
-                }, throwable -> throwable.printStackTrace()));
-        openMainActivity();
+                }, throwable -> throwable.printStackTrace()));*/
+        //openMainActivity();
     }
     @Override
     protected void onStart() {
@@ -114,15 +113,50 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
 
     @Override
     public void showError(String error) {
+        tvError.setText(error);
     }
 
     @Override
-    public void openMainActivity() {
+    public void openMainActivity(String user) {
         Intent intent = new Intent(HelloActivity.this, MainActivity.class);
-        intent.putExtra(Const.USER_INTENT,etName.getText().toString());
-        LogUtil.info(this,"send user: "+etName.getText());
+        intent.putExtra(Const.USER_INTENT,user);
+        //saveUserToSharedPreferences(user);
+        //LogUtil.info(this,"send user: "+etName.getText());
         startActivity(intent);
     }
 
 
+    void saveUserToSharedPreferences(String activeUser) {
+        sharedPreferences.edit().putString(Const.ACTIVE_USER, activeUser).apply();
+    }
+
+    void loadUserFromSharedPreferences() {
+        String temp = sharedPreferences.getString(Const.ACTIVE_USER, "");
+        if(temp.length() > 0){
+            Intent intent = new Intent(HelloActivity.this, MainActivity.class);
+            intent.putExtra(Const.USER_INTENT,temp);
+            startActivity(intent);
+        }
+    }
+
+
+    @Override
+    public void onUnknownError(String error) {
+        LogUtil.info(this, "on Unknown error: "+ error);
+    }
+
+    @Override
+    public void onTimeout() {
+        LogUtil.info(this, "onTimeout error: "+getComponentName());
+    }
+
+    @Override
+    public void onNetworkError() {
+        LogUtil.info(this, "onNetworkError error: "+getComponentName());
+    }
+
+    @Override
+    public void onConnectionError() {
+        LogUtil.info(this, "onConnection error: "+getComponentName());
+    }
 }

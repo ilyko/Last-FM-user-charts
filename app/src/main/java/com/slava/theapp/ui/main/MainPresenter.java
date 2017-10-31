@@ -1,15 +1,12 @@
 package com.slava.theapp.ui.main;
 
-import com.slava.theapp.model.chart.TopArtists;
 import com.slava.theapp.network.NetworkClient;
 import com.slava.theapp.ui.base.BasePresenter;
-import com.slava.theapp.util.Const;
+
 import com.slava.theapp.util.LogUtil;
-import com.slava.theapp.util.rx.SchedulerProvider;
+
 
 import javax.inject.Inject;
-
-import io.reactivex.disposables.CompositeDisposable;
 
 public class MainPresenter extends BasePresenter implements MainMvp.Presenter{
 

@@ -150,4 +150,22 @@ public class User {
         this.type = type;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                ", realname='" + realname + '\'' +
+                ", image=" + image +
+                ", url='" + url + '\'' +
+                ", country='" + country + '\'' +
+                ", age='" + age + '\'' +
+                ", gender='" + gender + '\'' +
+                ", subscriber='" + subscriber + '\'' +
+                ", playcount='" + playcount + '\'' +
+                ", playlists='" + playlists + '\'' +
+                ", bootstrap='" + bootstrap + '\'' +
+                ", registered=" + registered +
+                ", type='" + type + '\'' +
+                '}';
+    }
 }

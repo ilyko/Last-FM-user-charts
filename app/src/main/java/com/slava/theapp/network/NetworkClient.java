@@ -2,21 +2,21 @@ package com.slava.theapp.network;
 
 import android.support.annotation.NonNull;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.slava.theapp.BuildConfig;
-import com.slava.theapp.util.Const;
+import com.slava.theapp.data.remote.deserializer.MyDeserializer;
+import com.slava.theapp.data.remote.responses.ServerResponse;
 import com.slava.theapp.util.LogUtil;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import okhttp3.HttpUrl;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -68,12 +68,25 @@ public class NetworkClient {
                 .baseUrl(this.url)
                 .client(httpClient)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
+                //.addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(buildGsonConverter())
                 .build();
         apiHelper = retrofit.create(NetworkApi.class);
+    }
+
+    private static GsonConverterFactory buildGsonConverter() {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+
+        // Adding custom deserializers
+
+        gsonBuilder.registerTypeAdapter(ServerResponse.class, new MyDeserializer());
+        Gson myGson = gsonBuilder.create();
+
+        return GsonConverterFactory.create(myGson);
     }
 
     public NetworkApi getApi() {return apiHelper;}
 
     public String getUrl(){ return url;}
+
 }

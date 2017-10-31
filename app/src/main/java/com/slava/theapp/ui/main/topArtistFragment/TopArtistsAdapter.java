@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding2.support.v4.widget.RxSwipeRefreshLayout;
 import com.slava.theapp.R;
 import com.slava.theapp.model.Artist;
+import com.slava.theapp.model.Artists;
 import com.slava.theapp.util.LogUtil;
 
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private int page = 0;
     private boolean isRequest = false;
     private TopArtistsMvp.Presenter presenter;
+    private int totalPage = 0;
 
     public TopArtistsAdapter(TopArtistsMvp.Presenter presenter) {
         this.presenter = presenter;
@@ -42,7 +44,7 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
 
 
-    enum TYPE {EMPTY, ARTIST}
+    private enum TYPE {EMPTY, ARTIST}
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v;
@@ -65,6 +67,7 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemViewType(int position) {
+        LogUtil.info(this, "getItemViewType");
         if (!isRequest) {
             return mArtists.size()==0 ? TYPE.EMPTY.ordinal() : TYPE.ARTIST.ordinal();
         } else {
@@ -78,7 +81,9 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             ((ArtistsViewHolder)holder).setArtist(mArtists.get(position));
         }
         //TODO check attr - totalPages and total;
-        if (!isRequest && (mArtists.size()==0 || position==mArtists.size()-1)) {
+        LogUtil.info(this, "position" + position);
+        LogUtil.info(this, "totalPage: "+totalPage + " page: "+page);
+        if ((totalPage==0 || totalPage>page) && !isRequest && (mArtists.size()==0 || position==mArtists.size()-1)) {
             page++;
             isRequest = true;
             presenter.getTopArtists(30,page);
@@ -86,25 +91,25 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     @Override
-    public void setArtist(Artist artist) {
-    }
-
-    @Override
-    public void handleResponse(List<Artist> artists) {
-        mArtists.addAll(artists);
-        LogUtil.info(this,"size:"+mArtists.size());
+    public void handleResponse(Artists artists) {
+        mArtists.addAll(artists.getArtist());
+        LogUtil.info(this,"size: "+mArtists.size());
+        totalPage = Integer.valueOf(artists.getAttr().getTotalPages());
+        page = Integer.valueOf(artists.getAttr().getPage());
         notifyDataSetChanged();
         isRequest = false;
     }
 
     @Override
-    public void handleUpdateResponse(List<Artist> artists) {
+    public void handleUpdateResponse(Artists artists) {
         mArtists.clear();
         notifyDataSetChanged();
-        mArtists.addAll(artists);
+        mArtists.addAll(artists.getArtist());
+        LogUtil.info(this, "size: "+mArtists.size());
         notifyDataSetChanged();
         isRequest = false;
-        page = 1;
+        totalPage = Integer.valueOf(artists.getAttr().getTotalPages());
+        page = Integer.valueOf(artists.getAttr().getPage());
     }
 
     @Override
@@ -121,7 +126,7 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         TextView tvName;*/
         @BindView(R.id.progress)
         ProgressBar progressBar;
-        public EmptyViewHolder(View itemView) {
+        EmptyViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
         }
@@ -134,13 +139,13 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         TextView tvName;
         @BindView(R.id.image)
         ImageView imageView;
-        public ArtistsViewHolder(View v) {
+        ArtistsViewHolder(View v) {
             super(v);
             v.setOnClickListener(this);
             ButterKnife.bind(this,itemView);
         }
 
-        public void setArtist(Artist artist) {
+        void setArtist(Artist artist) {
             tvName.setText(getAdapterPosition()+1+": "+artist.getName());
             tvName.requestLayout();
 

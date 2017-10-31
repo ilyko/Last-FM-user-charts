@@ -36,7 +36,9 @@ public class TopArtistsPresenter extends BasePresenter implements TopArtistsMvp.
                 .observeOn(schedulerProvider.ui())
                 .subscribeOn(schedulerProvider.io())
                 .subscribe(
-                        response -> view.handleResponse(response.getArtists().getArtist()),// handleResponse(response.getArtists().getArtist()),
+                        response -> {
+                            view.handleResponse(response.getArtists());
+                        },// handleResponse(response.getArtists().getArtist()),
                         Throwable::printStackTrace
                 ));
     }
@@ -49,7 +51,7 @@ public class TopArtistsPresenter extends BasePresenter implements TopArtistsMvp.
                 .observeOn(schedulerProvider.ui())
                 .subscribeOn(schedulerProvider.io())
                 .subscribe(
-                        response -> view.handleUpdateResponse(response.getArtists().getArtist()),// handleResponse(response.getArtists().getArtist()),
+                        response -> view.handleUpdateResponse(response.getArtists()),// handleResponse(response.getArtists().getArtist()),
                         Throwable::printStackTrace
                 ));
     }
