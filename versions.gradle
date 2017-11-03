@@ -9,12 +9,12 @@ ext {
 
     retrofitVersion = "2.3.0"
     supportLibraryVersion = '26.1.0'
-    googlePlayVersion = '11.4.0'
+    googlePlayVersion = '11.4.2'
     rxjavaVersion = '2.1.1'
     rxandroidVersion = '2.0.1'
     rxbinding = '2.0.0'
     dagger2Version = '2.11'
-    butterKnifeVersion = '8.4.0'
+    butterKnifeVersion = '8.6.0'
     constraintLayoutVersion = '1.0.2'
     rx2FastAndroidNetworking = '1.0.0'
     calligraphyVersion = '2.2.0'

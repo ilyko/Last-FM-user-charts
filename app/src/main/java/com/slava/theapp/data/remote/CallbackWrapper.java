@@ -14,15 +14,11 @@ import io.reactivex.observers.DisposableObserver;
 import okhttp3.ResponseBody;
 import retrofit2.HttpException;
 
-/**
- * Created by slava on 30.10.17.
- */
+public abstract class CallbackWrapper<T extends BaseResponse> extends DisposableObserver<T> {
 
-public abstract class CallbackWrapper <T extends BaseResponse> extends DisposableObserver<T> {
-    //BaseView is just a reference of a View in MVP
     private WeakReference<MvpView> weakReference;
 
-    public CallbackWrapper(MvpView view) {
+    protected CallbackWrapper(MvpView view) {
         this.weakReference = new WeakReference<>(view);
     }
 
@@ -30,16 +26,22 @@ public abstract class CallbackWrapper <T extends BaseResponse> extends Disposabl
 
     @Override
     public void onNext(T t) {
-        //You can return StatusCodes of different cases from your API and handle it here. I usually include these cases on BaseResponse and iherit it from every Response
-        onSuccess(t);
+        //You can return StatusCodes of different cases from your API and handle it here.
+        // I usually include these cases on BaseResponse and iherit it from every Response
+        if (t.getError() != null) {
+            MvpView view = weakReference.get();
+            view.onError(t.getMessage());
+        } else {
+            onSuccess(t);
+        }
     }
 
     @Override
     public void onError(Throwable e) {
-        LogUtil.info(this, "error: "+e);
+        LogUtil.info(this, "error: " + e);
         MvpView view = weakReference.get();
         if (e instanceof HttpException) {
-            ResponseBody responseBody = ((HttpException)e).response().errorBody();
+            ResponseBody responseBody = ((HttpException) e).response().errorBody();
             view.onUnknownError(getErrorMessage(responseBody));
         } else if (e instanceof SocketTimeoutException) {
             view.onTimeout();

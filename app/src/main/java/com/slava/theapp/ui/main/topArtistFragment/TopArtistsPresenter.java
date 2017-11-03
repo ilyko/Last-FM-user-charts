@@ -4,11 +4,9 @@ package com.slava.theapp.ui.main.topArtistFragment;
 import com.slava.theapp.network.NetworkClient;
 import com.slava.theapp.ui.base.BasePresenter;
 
-import javax.inject.Inject;
+import java.util.concurrent.TimeUnit;
 
-/**
- * Created by slava on 05.10.17.
- */
+import javax.inject.Inject;
 
 public class TopArtistsPresenter extends BasePresenter implements TopArtistsMvp.Presenter{
 
@@ -23,7 +21,7 @@ public class TopArtistsPresenter extends BasePresenter implements TopArtistsMvp.
         this.view = view;
     }
 
-    public void setUserId(String user) {
+    void setUserId(String user) {
         this.user = user;
     }
 
@@ -36,9 +34,7 @@ public class TopArtistsPresenter extends BasePresenter implements TopArtistsMvp.
                 .observeOn(schedulerProvider.ui())
                 .subscribeOn(schedulerProvider.io())
                 .subscribe(
-                        response -> {
-                            view.handleResponse(response.getArtists());
-                        },// handleResponse(response.getArtists().getArtist()),
+                        response -> view.handleResponse(response.getArtists()),
                         Throwable::printStackTrace
                 ));
     }
@@ -51,7 +47,7 @@ public class TopArtistsPresenter extends BasePresenter implements TopArtistsMvp.
                 .observeOn(schedulerProvider.ui())
                 .subscribeOn(schedulerProvider.io())
                 .subscribe(
-                        response -> view.handleUpdateResponse(response.getArtists()),// handleResponse(response.getArtists().getArtist()),
+                        response -> view.handleUpdateResponse(response.getArtists()),
                         Throwable::printStackTrace
                 ));
     }

@@ -1,6 +1,9 @@
 package com.slava.theapp.ui.main;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -15,7 +18,9 @@ import android.view.MenuItem;
 
 import com.slava.theapp.R;
 import com.slava.theapp.ui.base.BaseActivity;
+import com.slava.theapp.ui.hello.HelloActivity;
 import com.slava.theapp.ui.main.topArtistFragment.TopArtistsFragment;
+import com.slava.theapp.util.Const;
 
 import javax.inject.Inject;
 
@@ -34,6 +39,8 @@ public class MainActivity extends BaseActivity
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
 
+    @Inject
+    SharedPreferences sharedPreferences;
 
 
     @BindView(R.id.drawer_layout)
@@ -73,6 +80,11 @@ public class MainActivity extends BaseActivity
 
     }
 
+    @Override
+    public void onError(String message) {
+
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -107,7 +119,7 @@ public class MainActivity extends BaseActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -123,6 +135,10 @@ public class MainActivity extends BaseActivity
 
         } else if (id == R.id.nav_send) {
 
+        } else if (id == R.id.nav_logout) {
+            sharedPreferences.edit().remove(Const.ACTIVE_USER).apply();
+            Intent intent = new Intent(MainActivity.this, HelloActivity.class);
+            startActivity(intent);
         }
 
         drawer.closeDrawer(GravityCompat.START);
@@ -130,47 +146,7 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void openActivityOnTokenExpire() {
-
-    }
-
-    @Override
-    public void onError(@StringRes int resId) {
-
-    }
-
-    @Override
-    public void onError(String message) {
-
-    }
-
-    @Override
-    public void showMessage(String message) {
-
-    }
-
-    @Override
     public void showMessage(@StringRes int resId) {
-
-    }
-
-    @Override
-    public boolean isNetworkConnected() {
-        return false;
-    }
-
-    @Override
-    public void hideKeyboard() {
 
     }
 

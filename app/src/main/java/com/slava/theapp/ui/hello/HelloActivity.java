@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ import com.slava.theapp.model.user.TestUser;
 import com.slava.theapp.ui.base.BaseActivity;
 import com.slava.theapp.ui.main.MainActivity;
 import com.slava.theapp.util.Const;
+import com.slava.theapp.util.KeyboardUtils;
 import com.slava.theapp.util.LogUtil;
 
 import javax.inject.Inject;
@@ -35,7 +37,7 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
 
-    public static int LAYOUT =R.layout.activity_hello;
+    public static int LAYOUT = R.layout.activity_hello;
 
     @BindView(R.id.etName)
     TextView etName;
@@ -45,6 +47,7 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
     TextView etPassword;
     @BindView(R.id.btnLogin)
     Button mButton;
+
     @Inject
     HelloPresenter presenter;
     @Inject
@@ -53,6 +56,7 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
     RealmService realmService;
     @Inject
     SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +66,7 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
                 .textChanges(etName)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(is -> mButton.setEnabled(is.length()>0))
+                .subscribe(is -> mButton.setEnabled(is.length() > 0))
         );
 
     }
@@ -72,10 +76,11 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
     @OnClick(R.id.btnLogin)
     public void submit(View view) {
         TestUser testUser = new TestUser();
-        testUser.setName(etName.getText().toString());
+        testUser.setName(etName.getText().toString().trim());
         testUser.setId(testUser.hashCode());
         realmService.addTestUser(testUser);
         presenter.getUserInfo(testUser.getName());
+
 /*        compositeDisposable.add(realmService
                 .getTestUsers()
                 .switchMap(Flowable::fromIterable)
@@ -85,6 +90,7 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
                 }, throwable -> throwable.printStackTrace()));*/
         //openMainActivity();
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -94,6 +100,13 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
     @Override
     protected void setUp() {
 
+    }
+
+    @Override
+    public void onError(String message) {
+        KeyboardUtils.hideSoftKeyboard(this);
+        Snackbar.make(mButton, message, Snackbar.LENGTH_LONG)
+                .show();
     }
 
     @Override
@@ -112,29 +125,18 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
     }
 
     @Override
-    public void showError(String error) {
-        tvError.setText(error);
-    }
-
-    @Override
     public void openMainActivity(String user) {
+        sharedPreferences.edit().putString(Const.ACTIVE_USER, user).apply();
         Intent intent = new Intent(HelloActivity.this, MainActivity.class);
-        intent.putExtra(Const.USER_INTENT,user);
-        //saveUserToSharedPreferences(user);
-        //LogUtil.info(this,"send user: "+etName.getText());
+        intent.putExtra(Const.USER_INTENT, user);
         startActivity(intent);
-    }
-
-
-    void saveUserToSharedPreferences(String activeUser) {
-        sharedPreferences.edit().putString(Const.ACTIVE_USER, activeUser).apply();
     }
 
     void loadUserFromSharedPreferences() {
         String temp = sharedPreferences.getString(Const.ACTIVE_USER, "");
-        if(temp.length() > 0){
+        if (temp.length() > 0) {
             Intent intent = new Intent(HelloActivity.this, MainActivity.class);
-            intent.putExtra(Const.USER_INTENT,temp);
+            intent.putExtra(Const.USER_INTENT, temp);
             startActivity(intent);
         }
     }
@@ -142,21 +144,21 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
 
     @Override
     public void onUnknownError(String error) {
-        LogUtil.info(this, "on Unknown error: "+ error);
+        LogUtil.info(this, "on Unknown error: " + error);
     }
 
     @Override
     public void onTimeout() {
-        LogUtil.info(this, "onTimeout error: "+getComponentName());
+        LogUtil.info(this, "onTimeout error: " + getComponentName());
     }
 
     @Override
     public void onNetworkError() {
-        LogUtil.info(this, "onNetworkError error: "+getComponentName());
+        LogUtil.info(this, "onNetworkError error: " + getComponentName());
     }
 
     @Override
     public void onConnectionError() {
-        LogUtil.info(this, "onConnection error: "+getComponentName());
+        LogUtil.info(this, "onConnection error: " + getComponentName());
     }
 }

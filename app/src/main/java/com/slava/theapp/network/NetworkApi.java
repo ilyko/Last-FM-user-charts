@@ -1,6 +1,5 @@
 package com.slava.theapp.network;
 
-import com.slava.theapp.data.remote.responses.ServerResponse;
 import com.slava.theapp.model.chart.TopArtists;
 import com.slava.theapp.model.chart.TopTracks;
 import com.slava.theapp.model.user.UserInfo;

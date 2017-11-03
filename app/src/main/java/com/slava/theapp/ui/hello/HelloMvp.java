@@ -1,21 +1,22 @@
 package com.slava.theapp.ui.hello;
 
-import com.slava.theapp.model.user.UserInfo;
 import com.slava.theapp.ui.base.MvpView;
 
 public interface HelloMvp {
 
-    /** Represents the View in MVP. */
-    interface View extends MvpView{
+    /**
+     * Represents the View in MVP.
+     */
+    interface View extends MvpView {
         void showMessage(String message);
-        void showError(String error);
+
         void openMainActivity(String name);
     }
 
-    /** Represents the Presenter in MVP. */
+    /**
+     * Represents the Presenter in MVP.
+     */
     interface Presenter {
-        void loadMessage();
-        void saveName(String firstName, String lastName);
         void getUserInfo(String user);
     }
 }

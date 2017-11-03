@@ -1,11 +1,5 @@
-
-
 package com.slava.theapp.data;
 
-
-import android.content.Context;
-
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton

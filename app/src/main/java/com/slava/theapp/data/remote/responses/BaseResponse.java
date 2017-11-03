@@ -5,11 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-/**
- * Created by slava on 30.10.17.
- */
-
-public abstract class BaseResponse {
+public abstract class BaseResponse{
     @Override
     public String toString() {
         return "BaseResponse{" +

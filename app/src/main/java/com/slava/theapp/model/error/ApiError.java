@@ -4,7 +4,7 @@ package com.slava.theapp.model.error;
         import com.google.gson.annotations.Expose;
         import com.google.gson.annotations.SerializedName;
 
-public class ApiError{
+public class ApiError {
 
     @SerializedName("error")
     @Expose
