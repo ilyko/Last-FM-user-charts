@@ -2,6 +2,7 @@ package com.slava.theapp.ui.main.topArtistFragment;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -45,6 +46,8 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
     NetworkClient networkClient;
     @Inject
     SchedulerProvider schedulerProvider;
+    @Inject
+    SharedPreferences sharedPreferences;
 
     public static TopArtistsFragment newInstance() {
         Bundle args = new Bundle();
@@ -59,7 +62,8 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         LogUtil.info(this,"hello: "+presenter);
-        String user = getActivity().getIntent().getStringExtra(Const.USER_INTENT);
+        String user = sharedPreferences.getString(Const.ACTIVE_USER, "");
+        //String user = getActivity().getIntent().getStringExtra(Const.USER_INTENT);
         LogUtil.info(this, "user:"+ user);
         presenter.setUserId(user);
         RxSwipeRefreshLayout

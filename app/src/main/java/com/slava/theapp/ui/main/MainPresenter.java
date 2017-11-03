@@ -12,7 +12,7 @@ public class MainPresenter extends BasePresenter implements MainMvp.Presenter{
 
     @Inject
     NetworkClient networkClient;
-    MainMvp.View mainView;
+    private MainMvp.View mainView;
 
     @Inject
     public MainPresenter(MainMvp.View mainView){

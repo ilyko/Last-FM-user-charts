@@ -9,13 +9,14 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.slava.theapp.R;
 import com.slava.theapp.database.RealmService;
 import com.slava.theapp.model.user.TestUser;
+import com.slava.theapp.model.user.UserInfo;
 import com.slava.theapp.ui.base.BaseActivity;
 import com.slava.theapp.ui.main.MainActivity;
 import com.slava.theapp.util.Const;
@@ -27,8 +28,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.reactivex.Flowable;
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 
@@ -40,7 +39,7 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
     public static int LAYOUT = R.layout.activity_hello;
 
     @BindView(R.id.etName)
-    TextView etName;
+    EditText etName;
     @BindView(R.id.tv_error_show)
     TextView tvError;
     @BindView(R.id.etPassword)
@@ -72,7 +71,6 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @OnClick(R.id.btnLogin)
     public void submit(View view) {
         TestUser testUser = new TestUser();
@@ -125,8 +123,8 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
     }
 
     @Override
-    public void openMainActivity(String user) {
-        sharedPreferences.edit().putString(Const.ACTIVE_USER, user).apply();
+    public void openMainActivity(UserInfo user) {
+        sharedPreferences.edit().putString(Const.ACTIVE_USER, user.getUser().getName()).apply();
         Intent intent = new Intent(HelloActivity.this, MainActivity.class);
         intent.putExtra(Const.USER_INTENT, user);
         startActivity(intent);
@@ -135,9 +133,12 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
     void loadUserFromSharedPreferences() {
         String temp = sharedPreferences.getString(Const.ACTIVE_USER, "");
         if (temp.length() > 0) {
-            Intent intent = new Intent(HelloActivity.this, MainActivity.class);
+            etName.setText(temp);
+            etName.setSelection(temp.length());
+            presenter.getUserInfo(temp);
+/*            Intent intent = new Intent(HelloActivity.this, MainActivity.class);
             intent.putExtra(Const.USER_INTENT, temp);
-            startActivity(intent);
+            startActivity(intent);*/
         }
     }
 

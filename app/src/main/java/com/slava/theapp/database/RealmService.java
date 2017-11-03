@@ -23,7 +23,6 @@ public class RealmService {
         realm.close();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void addTestUser(TestUser testUser){
         realm.beginTransaction();
         realm.insertOrUpdate(testUser);

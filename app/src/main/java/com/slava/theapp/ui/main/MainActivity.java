@@ -15,12 +15,19 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.slava.theapp.R;
+import com.slava.theapp.model.User;
+import com.slava.theapp.model.user.UserInfo;
 import com.slava.theapp.ui.base.BaseActivity;
 import com.slava.theapp.ui.hello.HelloActivity;
 import com.slava.theapp.ui.main.topArtistFragment.TopArtistsFragment;
 import com.slava.theapp.util.Const;
+import com.slava.theapp.util.LogUtil;
 
 import javax.inject.Inject;
 
@@ -29,6 +36,7 @@ import butterknife.ButterKnife;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, MainMvp.View, HasSupportFragmentInjector {
@@ -51,12 +59,30 @@ public class MainActivity extends BaseActivity
     NavigationView navigationView;
     @BindView(R.id.fab)
     FloatingActionButton fab;
+/*    @BindView(R.id.imageView)
+    ImageView imageView;*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
+        View header = navigationView.getHeaderView(0);
+        TextView lowerTv = header.findViewById(R.id.header_lower_tv_name);
+        TextView upperTv = header.findViewById(R.id.header_upper_tv_name);
+        ImageView imageView = header.findViewById(R.id.header_image);
+
         setSupportActionBar(toolbar);
+        UserInfo user = getIntent().getParcelableExtra(Const.USER_INTENT);
+        LogUtil.info(this, "user: " + user);
+        if(user!=null) {
+            lowerTv.setText(user.getUser().getName());
+            upperTv.setText(user.getUser().getRealname());
+            Glide.with(imageView.getContext())
+                    .load(user.getUser().getImage().get(3).getText())
+                    .bitmapTransform(new CropCircleTransformation(imageView.getContext()))
+                    .placeholder(R.drawable.account_circle_white_64dp)
+                    .into(imageView);
+        }
         fab.setOnClickListener(
                 view -> Snackbar.make(view, "Replace with your own action",
                         Snackbar.LENGTH_LONG).setAction("Action", null).show());
@@ -68,6 +94,16 @@ public class MainActivity extends BaseActivity
         if (savedInstanceState == null) {
             addFragment(R.id.constraint_layout_main, TopArtistsFragment.newInstance());
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     @Override

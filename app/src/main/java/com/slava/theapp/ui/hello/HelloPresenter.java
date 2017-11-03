@@ -32,7 +32,7 @@ public class HelloPresenter extends BasePresenter implements
                     @Override
                     protected void onSuccess(UserInfo userInfoServerResponse) {
                         LogUtil.info(this, "user:" + userInfoServerResponse);
-                        view.openMainActivity(userInfoServerResponse.getUser().getName());
+                        view.openMainActivity(userInfoServerResponse);
                     }
                 })
         );

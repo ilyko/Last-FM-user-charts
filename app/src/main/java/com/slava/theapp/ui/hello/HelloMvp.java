@@ -1,5 +1,6 @@
 package com.slava.theapp.ui.hello;
 
+import com.slava.theapp.model.user.UserInfo;
 import com.slava.theapp.ui.base.MvpView;
 
 public interface HelloMvp {
@@ -10,7 +11,7 @@ public interface HelloMvp {
     interface View extends MvpView {
         void showMessage(String message);
 
-        void openMainActivity(String name);
+        void openMainActivity(UserInfo user);
     }
 
     /**

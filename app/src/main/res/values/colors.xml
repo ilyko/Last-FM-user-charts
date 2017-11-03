@@ -4,4 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="white">#ffffff</color>
+    <color name="colorPrimaryLastFm">#b71c1c</color>
+    <color name="colorPrimaryDarkLastFm">#7f0000</color>
+    <color name="colorAccentLastFm">#f05545</color>
 </resources>
