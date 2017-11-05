@@ -1,5 +1,6 @@
 package com.slava.theapp.ui.hello;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -9,9 +10,12 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.slava.theapp.R;
 import com.slava.theapp.database.RealmService;
@@ -46,6 +50,10 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
     TextView etPassword;
     @BindView(R.id.btnLogin)
     Button mButton;
+    @BindView(R.id.checkboxLogin)
+    CheckBox checkBox;
+    ProgressDialog progressDialog;
+
 
     @Inject
     HelloPresenter presenter;
@@ -55,11 +63,16 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
     RealmService realmService;
     @Inject
     SharedPreferences sharedPreferences;
-
+    @Inject
+    Gson gson;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setUnBinder(ButterKnife.bind(this));
+        progressDialog = new ProgressDialog(HelloActivity.this,
+                R.style.LastFmTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Authenticating...");
         loadUserFromSharedPreferences();
         compositeDisposable.add(RxTextView
                 .textChanges(etName)
@@ -67,6 +80,7 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(is -> mButton.setEnabled(is.length() > 0))
         );
+
 
     }
 
@@ -76,6 +90,7 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
         TestUser testUser = new TestUser();
         testUser.setName(etName.getText().toString().trim());
         testUser.setId(testUser.hashCode());
+        progressDialog.show();
         realmService.addTestUser(testUser);
         presenter.getUserInfo(testUser.getName());
 
@@ -103,6 +118,7 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
     @Override
     public void onError(String message) {
         KeyboardUtils.hideSoftKeyboard(this);
+        progressDialog.dismiss();
         Snackbar.make(mButton, message, Snackbar.LENGTH_LONG)
                 .show();
     }
@@ -125,14 +141,19 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
     @Override
     public void openMainActivity(UserInfo user) {
         sharedPreferences.edit().putString(Const.ACTIVE_USER, user.getUser().getName()).apply();
+        sharedPreferences.edit().putBoolean(Const.REMEMBER_ME, checkBox.isChecked()).apply();
         Intent intent = new Intent(HelloActivity.this, MainActivity.class);
-        intent.putExtra(Const.USER_INTENT, user);
+        //intent.putExtra(Const.USER_INTENT, user);
+        intent.putExtra(Const.USER_INTENT, gson.toJson(user));
         startActivity(intent);
     }
 
     void loadUserFromSharedPreferences() {
         String temp = sharedPreferences.getString(Const.ACTIVE_USER, "");
-        if (temp.length() > 0) {
+        Boolean isRemember = sharedPreferences.getBoolean(Const.REMEMBER_ME, false);
+        checkBox.setChecked(isRemember);
+        if (temp.length() > 0 && isRemember) {
+            progressDialog.show();
             etName.setText(temp);
             etName.setSelection(temp.length());
             presenter.getUserInfo(temp);

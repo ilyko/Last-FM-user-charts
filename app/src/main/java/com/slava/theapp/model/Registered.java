@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Registered implements Parcelable {
+public class Registered{
 
     @SerializedName("#text")
     @Expose
@@ -30,35 +30,4 @@ public class Registered implements Parcelable {
     public void setUnixtime(String unixtime) {
         this.unixtime = unixtime;
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.text);
-        dest.writeString(this.unixtime);
-    }
-
-    public Registered() {
-    }
-
-    protected Registered(Parcel in) {
-        this.text = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.unixtime = in.readString();
-    }
-
-    public static final Parcelable.Creator<Registered> CREATOR = new Parcelable.Creator<Registered>() {
-        @Override
-        public Registered createFromParcel(Parcel source) {
-            return new Registered(source);
-        }
-
-        @Override
-        public Registered[] newArray(int size) {
-            return new Registered[size];
-        }
-    };
 }

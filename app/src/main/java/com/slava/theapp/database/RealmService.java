@@ -1,10 +1,7 @@
 package com.slava.theapp.database;
 
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 
 import com.slava.theapp.model.user.TestUser;
-import com.slava.theapp.util.LogUtil;
 
 import io.reactivex.Flowable;
 import io.realm.Realm;

@@ -31,4 +31,7 @@
 
     <style name="LastFmTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="LastFmTheme.Dark.Dialog" parent="Base.Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/colorAccentLastFm</item>
+    </style>
 </resources>

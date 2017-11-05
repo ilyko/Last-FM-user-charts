@@ -20,8 +20,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.slava.theapp.R;
-import com.slava.theapp.model.User;
 import com.slava.theapp.model.user.UserInfo;
 import com.slava.theapp.ui.base.BaseActivity;
 import com.slava.theapp.ui.hello.HelloActivity;
@@ -50,6 +50,8 @@ public class MainActivity extends BaseActivity
     @Inject
     SharedPreferences sharedPreferences;
 
+    @Inject
+    Gson gson;
 
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
@@ -72,7 +74,7 @@ public class MainActivity extends BaseActivity
         ImageView imageView = header.findViewById(R.id.header_image);
 
         setSupportActionBar(toolbar);
-        UserInfo user = getIntent().getParcelableExtra(Const.USER_INTENT);
+        UserInfo user = gson.fromJson(getIntent().getStringExtra(Const.USER_INTENT), UserInfo.class);
         LogUtil.info(this, "user: " + user);
         if(user!=null) {
             lowerTv.setText(user.getUser().getName());
@@ -173,6 +175,7 @@ public class MainActivity extends BaseActivity
 
         } else if (id == R.id.nav_logout) {
             sharedPreferences.edit().remove(Const.ACTIVE_USER).apply();
+            sharedPreferences.edit().remove(Const.REMEMBER_ME).apply();
             Intent intent = new Intent(MainActivity.this, HelloActivity.class);
             startActivity(intent);
         }

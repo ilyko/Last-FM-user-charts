@@ -8,7 +8,7 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class User implements Parcelable {
+public class User{
 
     @SerializedName("name")
     @Expose
@@ -172,58 +172,4 @@ public class User implements Parcelable {
                 ", type='" + type + '\'' +
                 '}';
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.name);
-        dest.writeString(this.realname);
-        dest.writeList(this.image);
-        dest.writeString(this.url);
-        dest.writeString(this.country);
-        dest.writeString(this.age);
-        dest.writeString(this.gender);
-        dest.writeString(this.subscriber);
-        dest.writeString(this.playcount);
-        dest.writeString(this.playlists);
-        dest.writeString(this.bootstrap);
-        dest.writeParcelable(this.registered, flags);
-        dest.writeString(this.type);
-    }
-
-    public User() {
-    }
-
-    protected User(Parcel in) {
-        this.name = in.readString();
-        this.realname = in.readString();
-        this.image = new ArrayList<Image>();
-        in.readList(this.image, Image.class.getClassLoader());
-        this.url = in.readString();
-        this.country = in.readString();
-        this.age = in.readString();
-        this.gender = in.readString();
-        this.subscriber = in.readString();
-        this.playcount = in.readString();
-        this.playlists = in.readString();
-        this.bootstrap = in.readString();
-        this.registered = in.readParcelable(Registered.class.getClassLoader());
-        this.type = in.readString();
-    }
-
-    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
-        @Override
-        public User createFromParcel(Parcel source) {
-            return new User(source);
-        }
-
-        @Override
-        public User[] newArray(int size) {
-            return new User[size];
-        }
-    };
 }
