@@ -23,7 +23,6 @@ public abstract class BaseActivity extends AppCompatActivity
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(getLayout());
-
     }
 
     public void setUnBinder(Unbinder unBinder) {

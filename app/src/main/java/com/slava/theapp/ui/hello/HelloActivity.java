@@ -3,16 +3,13 @@ package com.slava.theapp.ui.hello;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -36,9 +33,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 
 public class HelloActivity extends BaseActivity implements HelloMvp.View {
-
-    private static final String TAG = "SignInActivity";
-    private static final int RC_SIGN_IN = 9001;
 
     public static int LAYOUT = R.layout.activity_hello;
 
@@ -69,10 +63,7 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setUnBinder(ButterKnife.bind(this));
-        progressDialog = new ProgressDialog(HelloActivity.this,
-                R.style.LastFmTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Authenticating...");
+        initProgressDialog();
         loadUserFromSharedPreferences();
         compositeDisposable.add(RxTextView
                 .textChanges(etName)
@@ -82,6 +73,14 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
         );
 
 
+    }
+
+    void initProgressDialog(){
+        progressDialog = new ProgressDialog(HelloActivity.this,
+                R.style.LastFmTheme_Dark_Dialog);
+        progressDialog.setCancelable(false);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Authenticating...");
     }
 
 
@@ -143,9 +142,10 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
         sharedPreferences.edit().putString(Const.ACTIVE_USER, user.getUser().getName()).apply();
         sharedPreferences.edit().putBoolean(Const.REMEMBER_ME, checkBox.isChecked()).apply();
         Intent intent = new Intent(HelloActivity.this, MainActivity.class);
-        //intent.putExtra(Const.USER_INTENT, user);
         intent.putExtra(Const.USER_INTENT, gson.toJson(user));
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+        finish();
     }
 
     void loadUserFromSharedPreferences() {
@@ -163,6 +163,10 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+
+    }
 
     @Override
     public void onUnknownError(String error) {
@@ -177,6 +181,10 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
     @Override
     public void onNetworkError() {
         LogUtil.info(this, "onNetworkError error: " + getComponentName());
+        progressDialog.dismiss();
+        Snackbar.make(mButton, "No connection. Check internet connection or try again", Snackbar.LENGTH_LONG)
+                .setAction("try again", this::submit)
+                .show();
     }
 
     @Override

@@ -15,6 +15,7 @@ import com.slava.theapp.model.Artist;
 import com.slava.theapp.model.Artists;
 import com.slava.theapp.util.LogUtil;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,15 +27,12 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
 public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements TopArtistsMvp.View {
 
     private List<Artist> mArtists;
-    private int page = 0;
-    private boolean isRequest = false;
-    private TopArtistsMvp.Presenter presenter;
-    private int totalPage = -1;
+    private RecyclerViewClickListener recyclerViewClickListener;
 
-    TopArtistsAdapter(TopArtistsMvp.Presenter presenter) {
-        this.presenter = presenter;
+
+    TopArtistsAdapter(RecyclerViewClickListener recyclerViewClickListener) {
+        this.recyclerViewClickListener = recyclerViewClickListener;
         this.mArtists = new ArrayList<>();
-        LogUtil.info(this, "presenter:" + presenter + " this.presenter" + this.presenter);
     }
 
 
@@ -71,34 +69,36 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemViewType(int position) {
-        if (totalPage == 0) return TYPE.EMPTY.ordinal();
-        if (!isRequest) {
-            return mArtists.size() == 0 ? TYPE.LOADING.ordinal() : TYPE.ARTIST.ordinal();
-        } else {
-            return position >= mArtists.size() ? TYPE.LOADING.ordinal() : TYPE.ARTIST.ordinal();
-        }
+        return mArtists.get(position) == null ? TYPE.LOADING.ordinal() : TYPE.ARTIST.ordinal();
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if ((totalPage == -1 || totalPage > page) && !isRequest && (mArtists.size() == 0 || position == mArtists.size() - 1)) {
-            page++;
-            isRequest = true;
-            presenter.getTopArtists(30, page);
-        }
         if (holder instanceof ArtistsViewHolder) {
             ((ArtistsViewHolder) holder).setArtist(mArtists.get(position));
+        } else if (holder instanceof LoadingViewHolder) {
+            LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
+            loadingViewHolder.progressBar.setIndeterminate(true);
         }
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return mArtists == null ? 0 : mArtists.size();
+
+        /* if (!isRequest) {
+            return mArtists.size() == 0 ? 1 : mArtists.size();
+        } else {
+            return mArtists.size()+1;
+        }*/
     }
 
     @Override
     public void handleResponse(Artists artists) {
         mArtists.addAll(artists.getArtist());
         LogUtil.info(this, "size: " + mArtists.size());
-        totalPage = Integer.valueOf(artists.getAttr().getTotalPages());
-        page = Integer.valueOf(artists.getAttr().getPage());
         notifyDataSetChanged();
-        isRequest = false;
     }
 
     @Override
@@ -109,19 +109,8 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         mArtists.addAll(artists.getArtist());
         LogUtil.info(this, "size: " + mArtists.size());
         notifyDataSetChanged();
-        isRequest = false;
-        totalPage = Integer.valueOf(artists.getAttr().getTotalPages());
-        page = Integer.valueOf(artists.getAttr().getPage());
     }
 
-    @Override
-    public int getItemCount() {
-        if (!isRequest) {
-            return mArtists.size() == 0 ? 1 : mArtists.size();
-        } else {
-            return mArtists.size()+1;
-        }
-    }
 
     class EmptyViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.no_content)
@@ -157,11 +146,11 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
         void setArtist(Artist artist) {
-            tvName.setText(getAdapterPosition() + 1 + ": " + artist.getName());
+            tvName.setText(MessageFormat.format("{0}: {1}", getAdapterPosition() + 1, artist.getName()));
             tvName.requestLayout();
 
             String path = null;
-            for (int i = 0; i < artist.getImage().size(); i++) {
+            for (int i = 1; i < artist.getImage().size(); i++) {
                 path = artist.getImage().get(i).getText();
                 if (!TextUtils.isEmpty(path)) break;
             }
@@ -180,6 +169,10 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         public void onClick(View view) {
             LogUtil.info(this, "clicked");
         }
+    }
+
+    public interface RecyclerViewClickListener {
+        void recyclerViewListClicked(View v, int position);
     }
 }
 

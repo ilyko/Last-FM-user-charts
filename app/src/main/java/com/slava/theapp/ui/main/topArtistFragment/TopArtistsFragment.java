@@ -12,16 +12,14 @@ import android.view.View;
 
 import com.jakewharton.rxbinding2.support.v4.widget.RxSwipeRefreshLayout;
 import com.slava.theapp.R;
-import com.slava.theapp.model.Artist;
 import com.slava.theapp.model.Artists;
 import com.slava.theapp.network.NetworkClient;
 import com.slava.theapp.ui.base.BaseActivity;
 import com.slava.theapp.ui.base.BaseFragment;
+import com.slava.theapp.ui.base.EndlessRecyclerViewScrollListener;
 import com.slava.theapp.util.Const;
 import com.slava.theapp.util.LogUtil;
 import com.slava.theapp.util.rx.SchedulerProvider;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -29,8 +27,10 @@ import butterknife.BindView;
 import dagger.android.support.AndroidSupportInjection;
 import io.reactivex.disposables.CompositeDisposable;
 
-public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.View{
+public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.View, TopArtistsAdapter.RecyclerViewClickListener {
+
     protected TopArtistsAdapter topArtistsAdapter;
+    private int mLoadedItems = 0;
 
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
@@ -48,6 +48,7 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
     SchedulerProvider schedulerProvider;
     @Inject
     SharedPreferences sharedPreferences;
+    private EndlessRecyclerViewScrollListener scrollListener;
 
     public static TopArtistsFragment newInstance() {
         Bundle args = new Bundle();
@@ -60,18 +61,30 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        LogUtil.info(this,"hello: "+presenter);
         String user = sharedPreferences.getString(Const.ACTIVE_USER, "");
-        //String user = getActivity().getIntent().getStringExtra(Const.USER_INTENT);
-        LogUtil.info(this, "user:"+ user);
         presenter.setUserId(user);
+        initRv();
+    }
+
+    void initRv() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                presenter.getTopArtists(30, page+1);
+
+            }
+        };
+        mRecyclerView.addOnScrollListener(scrollListener);
         RxSwipeRefreshLayout
                 .refreshes(swipeContainer)
                 .subscribe(v -> presenter.updateTopArtist());
-        topArtistsAdapter = new TopArtistsAdapter(presenter);
+        topArtistsAdapter = new TopArtistsAdapter(this);
         mRecyclerView.setAdapter(topArtistsAdapter);
     }
+
 
     @Override
     public void onAttach(Context context) {
@@ -101,12 +114,18 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
 
     @Override
     public void handleUpdateResponse(Artists artists) {
+        scrollListener.resetState();
         topArtistsAdapter.handleUpdateResponse(artists);
         try {
             RxSwipeRefreshLayout.refreshing(swipeContainer).accept(false);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    @Override
+    public void recyclerViewListClicked(View v, int position) {
+        LogUtil.info(this, "item: " + position + " clicked");
+    }
 }

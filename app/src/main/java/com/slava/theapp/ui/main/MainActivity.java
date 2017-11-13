@@ -177,7 +177,9 @@ public class MainActivity extends BaseActivity
             sharedPreferences.edit().remove(Const.ACTIVE_USER).apply();
             sharedPreferences.edit().remove(Const.REMEMBER_ME).apply();
             Intent intent = new Intent(MainActivity.this, HelloActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
+            finish();
         }
 
         drawer.closeDrawer(GravityCompat.START);
