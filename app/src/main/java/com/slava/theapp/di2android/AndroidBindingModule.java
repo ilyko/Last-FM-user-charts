@@ -4,7 +4,7 @@ import com.slava.theapp.ui.hello.HelloActivity;
 import com.slava.theapp.ui.hello.HelloActivityModule;
 import com.slava.theapp.ui.main.MainActivity;
 import com.slava.theapp.ui.main.MainActivityModule;
-import com.slava.theapp.ui.main.TopArtistFragmentProvider;
+import com.slava.theapp.ui.main.MainActivityFragmentProvider;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -15,7 +15,7 @@ public abstract class AndroidBindingModule {
     @ContributesAndroidInjector(modules = {ActivityModule.class, HelloActivityModule.class})
     abstract HelloActivity bindHelloActivity();
 
-    @ContributesAndroidInjector(modules = {ActivityModule.class, MainActivityModule.class, TopArtistFragmentProvider.class})
+    @ContributesAndroidInjector(modules = {ActivityModule.class, MainActivityModule.class, MainActivityFragmentProvider.class})
     abstract MainActivity bindMainActivity();
 
 /*    @Binds

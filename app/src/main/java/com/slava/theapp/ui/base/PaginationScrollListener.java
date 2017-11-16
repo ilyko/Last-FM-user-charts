@@ -7,10 +7,10 @@ import com.slava.theapp.util.LogUtil;
 
 public abstract class PaginationScrollListener extends RecyclerView.OnScrollListener {
 
-    LinearLayoutManager layoutManager;
+    private LinearLayoutManager layoutManager;
     private int visibleThreshold = 5;
 
-    public PaginationScrollListener(LinearLayoutManager layoutManager) {
+    protected PaginationScrollListener(LinearLayoutManager layoutManager) {
         this.layoutManager = layoutManager;
     }
 

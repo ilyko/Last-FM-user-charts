@@ -26,14 +26,14 @@ public class MainPresenter extends BasePresenter implements MainMvp.Presenter{
 
     @Override
     public void getTopTracks() {
-        compositeDisposable.add(networkClient
+       /* compositeDisposable.add(networkClient
                 .getApi()
                 .getTopTracks(null,null)
                 .observeOn(schedulerProvider.ui())
                 .subscribeOn(schedulerProvider.io())
                 .subscribe(response -> LogUtil.info(this, "response" + response.toString()),
                         Throwable::printStackTrace
-                ));
+                ));*/
     }
 
 }

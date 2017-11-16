@@ -12,7 +12,7 @@ import android.view.View;
 
 import com.jakewharton.rxbinding2.support.v4.widget.RxSwipeRefreshLayout;
 import com.slava.theapp.R;
-import com.slava.theapp.model.Artists;
+import com.slava.theapp.model.user.topArtists.TopArtists;
 import com.slava.theapp.ui.base.BaseActivity;
 import com.slava.theapp.ui.base.BaseFragment;
 import com.slava.theapp.ui.base.PaginationScrollListener;
@@ -100,7 +100,7 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
     }
     @Override
     public int getLayout() {
-        return R.layout.fragment_top_artist;
+        return R.layout.fragment_top_artists;
     }
 
     @Override
@@ -109,7 +109,7 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
     }
 
     @Override
-    public void handleResponse(Artists artists){
+    public void handleResponse(TopArtists artists) {
         isLoading = false;
         //currentPage = Integer.valueOf(artists.getAttr().getPage());
         //totalPages = Integer.valueOf(artists.getAttr().getTotalPages());
@@ -117,7 +117,7 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
     }
 
     @Override
-    public void handleUpdateResponse(Artists artists) {
+    public void handleUpdateResponse(TopArtists artists) {
         isLastPage = false;
         isLoading = false;
         currentPage = Integer.valueOf(artists.getAttr().getPage());

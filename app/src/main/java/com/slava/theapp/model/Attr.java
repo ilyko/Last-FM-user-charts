@@ -9,7 +9,9 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Attr {
-
+    @SerializedName("user")
+    @Expose
+    private String user;
     @SerializedName("page")
     @Expose
     private String page;
@@ -55,4 +57,11 @@ public class Attr {
         this.total = total;
     }
 
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
 }

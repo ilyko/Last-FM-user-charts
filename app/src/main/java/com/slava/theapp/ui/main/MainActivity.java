@@ -7,9 +7,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -61,21 +63,46 @@ public class MainActivity extends BaseActivity
     NavigationView navigationView;
     @BindView(R.id.fab)
     FloatingActionButton fab;
-/*    @BindView(R.id.imageView)
-    ImageView imageView;*/
+    @BindView(R.id.main_sliding_tabs)
+    TabLayout tabLayout;
+    @BindView(R.id.main_viewpager)
+    ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+        initUserInfo();
+        initTabs();
+        //* this might be not useful, but leave it alone. *//
+        fab.setOnClickListener(
+                view -> Snackbar.make(view, "Replace with your own action",
+                        Snackbar.LENGTH_LONG).setAction("Action", null).show());
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        //
+
+
+        navigationView.setNavigationItemSelectedListener(this);
+        /*if (savedInstanceState == null) {
+            addFragment(R.id.constraint_layout_main, TopArtistsFragment.newInstance());
+        }*/
+    }
+
+    private void initTabs(){
+        viewPager.setAdapter(new TopListsFragmentPagerAdapter(getSupportFragmentManager()));
+        tabLayout.setupWithViewPager(viewPager);
+    }
+    private void initUserInfo(){
         View header = navigationView.getHeaderView(0);
         TextView lowerTv = header.findViewById(R.id.header_lower_tv_name);
         TextView upperTv = header.findViewById(R.id.header_upper_tv_name);
         ImageView imageView = header.findViewById(R.id.header_image);
 
-        setSupportActionBar(toolbar);
         UserInfo user = gson.fromJson(getIntent().getStringExtra(Const.USER_INTENT), UserInfo.class);
-        LogUtil.info(this, "user: " + user);
         if(user!=null) {
             lowerTv.setText(user.getUser().getName());
             upperTv.setText(user.getUser().getRealname());
@@ -84,17 +111,6 @@ public class MainActivity extends BaseActivity
                     .bitmapTransform(new CropCircleTransformation(imageView.getContext()))
                     .placeholder(R.drawable.account_circle_white_64dp)
                     .into(imageView);
-        }
-        fab.setOnClickListener(
-                view -> Snackbar.make(view, "Replace with your own action",
-                        Snackbar.LENGTH_LONG).setAction("Action", null).show());
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
-        if (savedInstanceState == null) {
-            addFragment(R.id.constraint_layout_main, TopArtistsFragment.newInstance());
         }
     }
 

@@ -12,8 +12,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.slava.theapp.R;
 import com.slava.theapp.model.Artist;
-import com.slava.theapp.model.Artists;
 import com.slava.theapp.model.Attr;
+import com.slava.theapp.model.user.topArtists.TopArtists;
 import com.slava.theapp.util.LogUtil;
 
 import java.text.MessageFormat;
@@ -24,7 +24,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
-
+//TODO should i implement mvp in adapter?
 public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements TopArtistsMvp.View {
 
     private List<Artist> mArtists;
@@ -102,7 +102,7 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return attr;
     }
 
-    public void addLoadingFooter() {
+    void addLoadingFooter() {
         isLoadingAdded = true;
         mArtists.add(new Artist());
         notifyItemInserted(mArtists.size() - 1);
@@ -121,7 +121,7 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     @Override
-    public void handleResponse(Artists artists) {
+    public void handleResponse(TopArtists artists) {
         removeLoadingFooter();
         mArtists.addAll(artists.getArtist());
         LogUtil.info(this, "size: " + mArtists.size());
@@ -129,7 +129,7 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     @Override
-    public void handleUpdateResponse(Artists artists) {
+    public void handleUpdateResponse(TopArtists artists) {
         mArtists.clear();
         LogUtil.info(this, "size: "+mArtists.size());
         notifyDataSetChanged();

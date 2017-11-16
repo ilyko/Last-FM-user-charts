@@ -1,21 +1,12 @@
 package com.slava.theapp.ui.main.topArtistFragment;
 
 
-import com.slava.theapp.model.Artist;
-import com.slava.theapp.model.Artists;
-import com.slava.theapp.model.Attr;
-
-
-import java.util.List;
-
-/**
- * Created by slava on 04.10.17.
- */
+import com.slava.theapp.model.user.topArtists.TopArtists;
 
 public interface TopArtistsMvp {
     interface View{
-        void handleResponse(Artists artist);
-        void handleUpdateResponse(Artists artists);
+        void handleResponse(TopArtists artist);
+        void handleUpdateResponse(TopArtists artists);
     }
 
     /** Represents the Presenter in MVP. */
