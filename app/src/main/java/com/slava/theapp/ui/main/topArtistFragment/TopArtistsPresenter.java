@@ -14,7 +14,7 @@ public class TopArtistsPresenter extends BasePresenter implements TopArtistsMvp.
     private String user;
     @Inject
     NetworkClient networkClient;
-    TopArtistsMvp.View view;
+    private TopArtistsMvp.View view;
 
     @Inject
     public TopArtistsPresenter(TopArtistsMvp.View view){

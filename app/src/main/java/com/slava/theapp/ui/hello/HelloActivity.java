@@ -116,8 +116,8 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
 
     @Override
     public void onError(String message) {
+        LogUtil.info(this, "just onError");
         KeyboardUtils.hideSoftKeyboard(this);
-        progressDialog.dismiss();
         Snackbar.make(mButton, message, Snackbar.LENGTH_LONG)
                 .show();
     }
@@ -146,6 +146,12 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        progressDialog.dismiss();
     }
 
     void loadUserFromSharedPreferences() {

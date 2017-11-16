@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.slava.theapp.R;
 import com.slava.theapp.model.Artist;
 import com.slava.theapp.model.Artists;
+import com.slava.theapp.model.Attr;
 import com.slava.theapp.util.LogUtil;
 
 import java.text.MessageFormat;
@@ -28,6 +29,8 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private List<Artist> mArtists;
     private RecyclerViewClickListener recyclerViewClickListener;
+    private Attr attr;
+    private boolean isLoadingAdded = false;
 
 
     TopArtistsAdapter(RecyclerViewClickListener recyclerViewClickListener) {
@@ -69,13 +72,14 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemViewType(int position) {
-        return mArtists.get(position) == null ? TYPE.LOADING.ordinal() : TYPE.ARTIST.ordinal();
+        return (position == mArtists.size() - 1 && isLoadingAdded) ? TYPE.LOADING.ordinal() : TYPE.ARTIST.ordinal();
+        //return mArtists.get(position) == null ? TYPE.LOADING.ordinal() : TYPE.ARTIST.ordinal();
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ArtistsViewHolder) {
-            ((ArtistsViewHolder) holder).setArtist(mArtists.get(position));
+                ((ArtistsViewHolder) holder).setArtist(mArtists.get(position));
         } else if (holder instanceof LoadingViewHolder) {
             LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
             loadingViewHolder.progressBar.setIndeterminate(true);
@@ -94,8 +98,31 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }*/
     }
 
+    public Attr getAttr(){
+        return attr;
+    }
+
+    public void addLoadingFooter() {
+        isLoadingAdded = true;
+        mArtists.add(new Artist());
+        notifyItemInserted(mArtists.size() - 1);
+    }
+
+    public void removeLoadingFooter() {
+        isLoadingAdded = false;
+
+        int position = mArtists.size() - 1;
+        Artist artist = mArtists.get(position);
+
+        if (artist != null) {
+            mArtists.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
     @Override
     public void handleResponse(Artists artists) {
+        removeLoadingFooter();
         mArtists.addAll(artists.getArtist());
         LogUtil.info(this, "size: " + mArtists.size());
         notifyDataSetChanged();
@@ -109,6 +136,7 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         mArtists.addAll(artists.getArtist());
         LogUtil.info(this, "size: " + mArtists.size());
         notifyDataSetChanged();
+        attr = artists.getAttr();
     }
 
 
