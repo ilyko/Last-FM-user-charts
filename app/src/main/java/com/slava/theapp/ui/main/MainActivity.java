@@ -18,7 +18,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -67,13 +69,19 @@ public class MainActivity extends BaseActivity
     TabLayout tabLayout;
     @BindView(R.id.main_viewpager)
     ViewPager viewPager;
+    @BindView(R.id.spinner_nav)
+    Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        if(getSupportActionBar()!=null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
         initUserInfo();
+        initSpinner();
         initTabs();
         //* this might be not useful, but leave it alone. *//
         fab.setOnClickListener(
@@ -90,6 +98,13 @@ public class MainActivity extends BaseActivity
         /*if (savedInstanceState == null) {
             addFragment(R.id.constraint_layout_main, TopArtistsFragment.newInstance());
         }*/
+    }
+
+    private void initSpinner() {
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.period_of_time_array, R.layout.custom_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
     }
 
     private void initTabs(){

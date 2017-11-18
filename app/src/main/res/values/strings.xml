@@ -13,4 +13,14 @@
     <string name="empty">no content</string>
     <string name="photo">photo</string>
     <string name="remember_me">remember me</string>
+
+    <string-array name="period_of_time_array">
+        <item>Overall</item>
+        <item>Last 7 days</item>
+        <item>Last month</item>
+        <item>Last 3 month</item>
+        <item>Last 6 month</item>
+        <item>Last 12 month</item>
+        <item>Recently played</item>
+    </string-array>
 </resources>
