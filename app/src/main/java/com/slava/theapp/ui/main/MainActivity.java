@@ -29,9 +29,7 @@ import com.slava.theapp.R;
 import com.slava.theapp.model.user.UserInfo;
 import com.slava.theapp.ui.base.BaseActivity;
 import com.slava.theapp.ui.hello.HelloActivity;
-import com.slava.theapp.ui.main.topArtistFragment.TopArtistsFragment;
 import com.slava.theapp.util.Const;
-import com.slava.theapp.util.LogUtil;
 
 import javax.inject.Inject;
 
@@ -91,7 +89,6 @@ public class MainActivity extends BaseActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        //
 
 
         navigationView.setNavigationItemSelectedListener(this);

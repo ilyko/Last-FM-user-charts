@@ -89,7 +89,6 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
                 .subscribe(v -> presenter.updateTopArtist());
         topArtistsAdapter = new TopArtistsAdapter(this);
         mRecyclerView.setAdapter(topArtistsAdapter);
-        topArtistsAdapter.addLoadingFooter();
     }
 
 
@@ -111,17 +110,15 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
     @Override
     public void handleResponse(TopArtists artists) {
         isLoading = false;
-        //currentPage = Integer.valueOf(artists.getAttr().getPage());
-        //totalPages = Integer.valueOf(artists.getAttr().getTotalPages());
         topArtistsAdapter.handleResponse(artists);
     }
 
     @Override
     public void handleUpdateResponse(TopArtists artists) {
-        isLastPage = false;
-        isLoading = false;
         currentPage = Integer.valueOf(artists.getAttr().getPage());
         totalPages = Integer.valueOf(artists.getAttr().getTotalPages());
+        isLoading = false;
+        isLastPage = currentPage == totalPages;
         topArtistsAdapter.handleUpdateResponse(artists);
         try {
             RxSwipeRefreshLayout.refreshing(swipeContainer).accept(false);
