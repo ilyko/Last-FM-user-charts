@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="LastFmTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:navigationBarColor">?attr/colorAccent</item>
+        <item name="colorAccent">?attr/colorPrimary</item>
+        <item name="colorPrimary">@color/colorPrimaryLastFm</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkLastFm</item>
+    </style>
+</resources>

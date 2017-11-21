@@ -1,44 +1,106 @@
 package com.slava.theapp.ui.hello;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.OptionalPendingResult;
-import com.google.android.gms.common.api.ResultCallback;
+import com.google.gson.Gson;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.slava.theapp.R;
+import com.slava.theapp.database.RealmService;
+import com.slava.theapp.model.user.TestUser;
+import com.slava.theapp.model.user.UserInfo;
 import com.slava.theapp.ui.base.BaseActivity;
+import com.slava.theapp.ui.main.MainActivity;
+import com.slava.theapp.util.Const;
+import com.slava.theapp.util.KeyboardUtils;
 import com.slava.theapp.util.LogUtil;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 
 public class HelloActivity extends BaseActivity implements HelloMvp.View {
 
-    private static final String TAG = "SignInActivity";
-    private static final int RC_SIGN_IN = 9001;
+    public static int LAYOUT = R.layout.activity_hello;
 
-    public static int LAYOUT =R.layout.activity_hello;
+    @BindView(R.id.etName)
+    EditText etName;
+    @BindView(R.id.tv_error_show)
+    TextView tvError;
+    @BindView(R.id.etPassword)
+    TextView etPassword;
+    @BindView(R.id.btnLogin)
+    Button mButton;
+    @BindView(R.id.checkboxLogin)
+    CheckBox checkBox;
+    ProgressDialog progressDialog;
 
-    @BindView(R.id.text_hello)
-    TextView mStatusTextView;
 
     @Inject
     HelloPresenter presenter;
-
+    @Inject
+    CompositeDisposable compositeDisposable;
+    @Inject
+    RealmService realmService;
+    @Inject
+    SharedPreferences sharedPreferences;
+    @Inject
+    Gson gson;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setUnBinder(ButterKnife.bind(this));
-        presenter.loadMessage();
+        initProgressDialog();
+        loadUserFromSharedPreferences();
+        compositeDisposable.add(RxTextView
+                .textChanges(etName)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(is -> mButton.setEnabled(is.length() > 0))
+        );
+
+
+    }
+
+    void initProgressDialog(){
+        progressDialog = new ProgressDialog(HelloActivity.this,
+                R.style.LastFmTheme_Dark_Dialog);
+        progressDialog.setCancelable(false);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Authenticating...");
+    }
+
+
+    @OnClick(R.id.btnLogin)
+    public void submit(View view) {
+        TestUser testUser = new TestUser();
+        testUser.setName(etName.getText().toString().trim());
+        testUser.setId(testUser.hashCode());
+        progressDialog.show();
+        realmService.addTestUser(testUser);
+        presenter.getUserInfo(testUser.getName());
+
+/*        compositeDisposable.add(realmService
+                .getTestUsers()
+                .switchMap(Flowable::fromIterable)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(user -> {
+                    LogUtil.info(this, "user:" + user);
+                }, throwable -> throwable.printStackTrace()));*/
+        //openMainActivity();
     }
 
     @Override
@@ -53,6 +115,14 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
     }
 
     @Override
+    public void onError(String message) {
+        LogUtil.info(this, "just onError");
+        KeyboardUtils.hideSoftKeyboard(this);
+        Snackbar.make(mButton, message, Snackbar.LENGTH_LONG)
+                .show();
+    }
+
+    @Override
     public int getLayout() {
         return LAYOUT;
     }
@@ -63,12 +133,68 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
     }
 
     @Override
-    public void showError(String error) {
-        if(!isNetworkConnected()){
-            mStatusTextView.setText(error);
-        } else {
-            mStatusTextView.setText("Connection is OK");}
+    protected void closeRealm() {
+        realmService.closeRealm();
     }
 
+    @Override
+    public void openMainActivity(UserInfo user) {
+        sharedPreferences.edit().putString(Const.ACTIVE_USER, user.getUser().getName()).apply();
+        sharedPreferences.edit().putBoolean(Const.REMEMBER_ME, checkBox.isChecked()).apply();
+        Intent intent = new Intent(HelloActivity.this, MainActivity.class);
+        intent.putExtra(Const.USER_INTENT, gson.toJson(user));
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        progressDialog.dismiss();
+    }
+
+    void loadUserFromSharedPreferences() {
+        String temp = sharedPreferences.getString(Const.ACTIVE_USER, "");
+        Boolean isRemember = sharedPreferences.getBoolean(Const.REMEMBER_ME, false);
+        checkBox.setChecked(isRemember);
+        if (temp.length() > 0 && isRemember) {
+            progressDialog.show();
+            etName.setText(temp);
+            etName.setSelection(temp.length());
+            presenter.getUserInfo(temp);
+/*            Intent intent = new Intent(HelloActivity.this, MainActivity.class);
+            intent.putExtra(Const.USER_INTENT, temp);
+            startActivity(intent);*/
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+
+    }
+
+    @Override
+    public void onUnknownError(String error) {
+        LogUtil.info(this, "on Unknown error: " + error);
+    }
+
+    @Override
+    public void onTimeout() {
+        LogUtil.info(this, "onTimeout error: " + getComponentName());
+    }
+
+    @Override
+    public void onNetworkError() {
+        LogUtil.info(this, "onNetworkError error: " + getComponentName());
+        progressDialog.dismiss();
+        Snackbar.make(mButton, "No connection. Check internet connection or try again", Snackbar.LENGTH_LONG)
+                .setAction("try again", this::submit)
+                .show();
+    }
+
+    @Override
+    public void onConnectionError() {
+        LogUtil.info(this, "onConnection error: " + getComponentName());
+    }
 }

@@ -1,9 +1,5 @@
 package com.slava.theapp.model.chart;
 
-/**
- * Created by slava on 03.10.17.
- */
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.slava.theapp.model.Tracks;

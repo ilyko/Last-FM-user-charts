@@ -38,6 +38,9 @@ public class Track {
     @SerializedName("image")
     @Expose
     private List<Image> image = null;
+    @SerializedName("@attr")
+    @Expose
+    private Attr attr;
 
     public String getName() {
         return name;
@@ -111,6 +114,13 @@ public class Track {
         this.image = image;
     }
 
+    public Attr getAttr() {
+        return attr;
+    }
+
+    public void setAttr(Attr attr) {
+        this.attr = attr;
+    }
     @Override
     public String toString() {
         return "Track{" +

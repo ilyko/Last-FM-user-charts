@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Base.Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -17,4 +17,21 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+   <style name="LastFmTheme" parent="Base.Theme.AppCompat.Light.DarkActionBar" >
+       <item name="colorPrimary">@color/colorPrimaryLastFm</item>
+       <item name="colorPrimaryDark">@color/colorPrimaryDarkLastFm</item>
+       <item name="colorAccent">@color/colorAccentLastFm</item>
+</style>
+    <style name="LastFmTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="LastFmTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="LastFmTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="LastFmTheme.Dark.Dialog" parent="Base.Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/colorAccentLastFm</item>
+    </style>
 </resources>

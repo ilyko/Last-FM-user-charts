@@ -28,4 +28,13 @@ public interface MvpView {
 
     void hideKeyboard();
 
+    void onUnknownError(String error);
+
+    void onTimeout();
+
+    void onNetworkError();
+
+
+    void onConnectionError();
+
 }

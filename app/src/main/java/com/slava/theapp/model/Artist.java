@@ -7,8 +7,8 @@ package com.slava.theapp.model;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-public class Artist {
+import com.slava.theapp.model.user.topTracks.Attr;
+public class Artist{
 
     @SerializedName("name")
     @Expose
@@ -31,6 +31,9 @@ public class Artist {
     @SerializedName("image")
     @Expose
     private List<Image> image = null;
+    @SerializedName("@attr")
+    @Expose
+    private Attr attr;
 
     public String getName() {
         return name;
@@ -88,6 +91,14 @@ public class Artist {
         this.image = image;
     }
 
+    public Attr getAttr() {
+        return attr;
+    }
+
+    public void setAttr(Attr attr) {
+        this.attr = attr;
+    }
+
     @Override
     public String toString() {
         return "Artist{" +
@@ -100,4 +111,6 @@ public class Artist {
                 ", image=" + image +
                 '}';
     }
+
+
 }

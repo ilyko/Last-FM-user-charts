@@ -3,20 +3,16 @@ package com.slava.theapp.network;
 import android.support.annotation.NonNull;
 
 import com.slava.theapp.BuildConfig;
-import com.slava.theapp.util.Const;
 import com.slava.theapp.util.LogUtil;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import okhttp3.HttpUrl;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -29,7 +25,7 @@ public class NetworkClient {
     private OkHttpClient httpClient;
 
     @Inject
-    public NetworkClient(){
+    public NetworkClient() {
         try {
             initBaseUrl(BuildConfig.API_ENDPOINT);
         } catch (Exception e) {
@@ -37,16 +33,12 @@ public class NetworkClient {
         }
     }
 
-    private void init() {
-
-    }
-
-    public void initBaseUrl(@NonNull String url) throws Exception {
+    private void initBaseUrl(@NonNull String url) throws Exception {
         this.url = url;
         httpClient = new OkHttpClient
                 .Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30,TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
                 .addInterceptor(chain -> {
                     Request original = chain.request();
                     HttpUrl originalHttpUrl = original.url();
@@ -55,7 +47,7 @@ public class NetworkClient {
                             .addQueryParameter("api_key", BuildConfig.API_KEY)
                             .addQueryParameter("format", "json")
                             .build();
-                    LogUtil.info(this,"url1: "+url1);
+                    LogUtil.info(this, "url1: " + url1);
 
                     Request.Builder requestBuilder = original.newBuilder()
                             .url(url1);
@@ -73,7 +65,13 @@ public class NetworkClient {
         apiHelper = retrofit.create(NetworkApi.class);
     }
 
-    public NetworkApi getApi() {return apiHelper;}
 
-    public String getUrl(){ return url;}
+    public NetworkApi getApi() {
+        return apiHelper;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
 }

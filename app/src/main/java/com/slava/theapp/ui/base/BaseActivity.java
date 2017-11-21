@@ -5,14 +5,9 @@ import android.support.annotation.Nullable;
 
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import com.slava.theapp.util.NetworkUtils;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 import butterknife.Unbinder;
 import dagger.android.AndroidInjection;
@@ -28,7 +23,6 @@ public abstract class BaseActivity extends AppCompatActivity
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(getLayout());
-
     }
 
     public void setUnBinder(Unbinder unBinder) {
@@ -37,7 +31,7 @@ public abstract class BaseActivity extends AppCompatActivity
 
     @Override
     protected void onDestroy() {
-
+        closeRealm();
         if (mUnBinder != null) {
             mUnBinder.unbind();
         }
@@ -50,7 +44,7 @@ public abstract class BaseActivity extends AppCompatActivity
                 .commitAllowingStateLoss();
     }
 
-
+    protected abstract void closeRealm();
     protected abstract void setUp();
 
     @Override
@@ -74,9 +68,7 @@ public abstract class BaseActivity extends AppCompatActivity
     }
 
     @Override
-    public void onError(String message) {
-
-    }
+    public abstract void onError(String message);
 
     @Override
     public void showMessage(String message) {

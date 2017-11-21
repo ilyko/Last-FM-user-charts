@@ -25,7 +25,7 @@ public class ApiHeader {
     private String uuid;
 
     @Inject
-    public ApiHeader(){
+    public ApiHeader() {
 
     }
 }

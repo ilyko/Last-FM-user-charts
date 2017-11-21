@@ -4,11 +4,10 @@ package com.slava.theapp.model;
  * Created by slava on 02.10.17.
  */
 
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Image {
+public class Image{
 
     @SerializedName("#text")
     @Expose
@@ -32,5 +31,4 @@ public class Image {
     public void setSize(String size) {
         this.size = size;
     }
-
 }
