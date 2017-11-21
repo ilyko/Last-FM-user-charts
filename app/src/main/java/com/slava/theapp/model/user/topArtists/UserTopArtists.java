@@ -2,8 +2,9 @@ package com.slava.theapp.model.user.topArtists;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.slava.theapp.data.remote.responses.BaseResponse;
 
-public class UserTopArtists {
+public class UserTopArtists extends BaseResponse{
 
     @SerializedName("topartists")
     @Expose

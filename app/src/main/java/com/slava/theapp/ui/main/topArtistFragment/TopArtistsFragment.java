@@ -25,6 +25,8 @@ import dagger.android.support.AndroidSupportInjection;
 
 public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.View, TopArtistsAdapter.RecyclerViewClickListener {
 
+    public static int LAYOUT = R.layout.fragment_top_artists;
+
     protected TopArtistsAdapter topArtistsAdapter;
 
     @BindView(R.id.recycler_view)
@@ -37,6 +39,7 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
 
     @Inject
     SharedPreferences sharedPreferences;
+    private final static int PER_PAGE = 30;
     private boolean isLastPage;
     private int currentPage = 0;
     private int totalPages = -1;
@@ -56,7 +59,7 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
         String user = sharedPreferences.getString(Const.ACTIVE_USER, "");
         initRv();
         presenter.setUserId(user);
-        presenter.updateTopArtist();
+        presenter.getFirstPageTopArtist();
 
     }
 
@@ -70,7 +73,7 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
                 currentPage++;
                 if (currentPage == totalPages) isLastPage = true;
                 mRecyclerView.post(() -> topArtistsAdapter.addLoadingFooter());
-                presenter.getTopArtists(30, currentPage);
+                presenter.getTopArtistsByPage(currentPage);
             }
 
             @Override
@@ -86,7 +89,7 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
         mRecyclerView.addOnScrollListener(scrollListener);
         RxSwipeRefreshLayout
                 .refreshes(swipeContainer)
-                .subscribe(v -> presenter.updateTopArtist());
+                .subscribe(v -> presenter.getFirstPageTopArtist());
         topArtistsAdapter = new TopArtistsAdapter(this);
         mRecyclerView.setAdapter(topArtistsAdapter);
     }
@@ -99,7 +102,7 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
     }
     @Override
     public int getLayout() {
-        return R.layout.fragment_top_artists;
+        return LAYOUT;
     }
 
     @Override
@@ -108,13 +111,13 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
     }
 
     @Override
-    public void handleResponse(TopArtists artists) {
+    public void handleByPageResponse(TopArtists artists) {
         isLoading = false;
         topArtistsAdapter.handleResponse(artists);
     }
 
     @Override
-    public void handleUpdateResponse(TopArtists artists) {
+    public void handleFirstPageResponse(TopArtists artists) {
         currentPage = Integer.valueOf(artists.getAttr().getPage());
         totalPages = Integer.valueOf(artists.getAttr().getTotalPages());
         isLoading = false;
@@ -132,4 +135,5 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
     public void recyclerViewListClicked(View v, int position) {
         LogUtil.info(this, "item: " + position + " clicked");
     }
+
 }

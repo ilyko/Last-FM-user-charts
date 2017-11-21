@@ -1,16 +1,16 @@
 package com.slava.theapp.ui.main.topArtistFragment;
 
 
+import com.slava.theapp.data.remote.CallbackWrapper;
+import com.slava.theapp.model.user.topArtists.UserTopArtists;
 import com.slava.theapp.network.NetworkClient;
 import com.slava.theapp.ui.base.BasePresenter;
-
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 public class TopArtistsPresenter extends BasePresenter implements TopArtistsMvp.Presenter{
 
-
+    private int perPage = 30;
     private String user;
     @Inject
     NetworkClient networkClient;
@@ -27,29 +27,33 @@ public class TopArtistsPresenter extends BasePresenter implements TopArtistsMvp.
 
 
     @Override
-    public void getTopArtists(int perPage, int pageCount) {
+    public void getTopArtistsByPage(int pageCount) {
         compositeDisposable.add(networkClient
                 .getApi()
                 .getUserTopArtists(perPage, pageCount, user)
                 .observeOn(schedulerProvider.ui())
                 .subscribeOn(schedulerProvider.io())
-                .subscribe(
-                        response -> view.handleResponse(response.getTopArtists()),
-                        Throwable::printStackTrace
-                ));
+                .subscribeWith(new CallbackWrapper<UserTopArtists>(view) {
+                    @Override
+                    protected void onSuccess(UserTopArtists response) {
+                        view.handleByPageResponse(response.getTopArtists());
+                    }
+                }));
     }
 
     @Override
-    public void updateTopArtist(){
+    public void getFirstPageTopArtist(){
         compositeDisposable.add(networkClient
                 .getApi()
-                .getUserTopArtists(30, 1, user)
+                .getUserTopArtists(perPage, 1, user)
                 .observeOn(schedulerProvider.ui())
                 .subscribeOn(schedulerProvider.io())
-                .subscribe(
-                        response -> view.handleUpdateResponse(response.getTopArtists()),
-                        Throwable::printStackTrace
-                ));
+                .subscribeWith(new CallbackWrapper<UserTopArtists>(view) {
+                    @Override
+                    protected void onSuccess(UserTopArtists response) {
+                        view.handleFirstPageResponse(response.getTopArtists());
+                    }
+                }));
     }
 }
 

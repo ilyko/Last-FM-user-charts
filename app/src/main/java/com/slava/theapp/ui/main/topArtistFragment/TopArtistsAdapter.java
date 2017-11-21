@@ -24,9 +24,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
-//TODO should i implement mvp in adapter?
-public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements TopArtistsMvp.View {
+public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    //TODO how to implement reusable adapter: generic? base adapter? interface instead of data model?
     private List<Artist> mArtists;
     private RecyclerViewClickListener recyclerViewClickListener;
     private Attr attr;
@@ -66,14 +66,12 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 vh = new ArtistsViewHolder(v);
                 break;
         }
-        //LogUtil.info(this, "viewType: "+vh.getClass());
         return vh;
     }
 
     @Override
     public int getItemViewType(int position) {
         return (position == mArtists.size() - 1 && isLoadingAdded) ? TYPE.LOADING.ordinal() : TYPE.ARTIST.ordinal();
-        //return mArtists.get(position) == null ? TYPE.LOADING.ordinal() : TYPE.ARTIST.ordinal();
     }
 
     @Override
@@ -90,12 +88,6 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public int getItemCount() {
         return mArtists == null ? 0 : mArtists.size();
-
-        /* if (!isRequest) {
-            return mArtists.size() == 0 ? 1 : mArtists.size();
-        } else {
-            return mArtists.size()+1;
-        }*/
     }
 
     public Attr getAttr(){
@@ -108,7 +100,7 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         notifyItemInserted(mArtists.size() - 1);
     }
 
-    public void removeLoadingFooter() {
+    private void removeLoadingFooter() {
         isLoadingAdded = false;
 
         int position = mArtists.size() - 1;
@@ -120,16 +112,14 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-    @Override
-    public void handleResponse(TopArtists artists) {
+    void handleResponse(TopArtists artists) {
         removeLoadingFooter();
         mArtists.addAll(artists.getArtist());
         LogUtil.info(this, "size: " + mArtists.size());
         notifyDataSetChanged();
     }
 
-    @Override
-    public void handleUpdateResponse(TopArtists artists) {
+    void handleUpdateResponse(TopArtists artists) {
         mArtists.clear();
         LogUtil.info(this, "size: "+mArtists.size());
         notifyDataSetChanged();
@@ -191,7 +181,6 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     .bitmapTransform(new CropCircleTransformation(tvName.getContext()))
                     .into(imageView);
         }
-
 
         @Override
         public void onClick(View view) {

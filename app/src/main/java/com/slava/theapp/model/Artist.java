@@ -8,7 +8,7 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.slava.theapp.model.user.topTracks.Attr;
-public class Artist {
+public class Artist{
 
     @SerializedName("name")
     @Expose
