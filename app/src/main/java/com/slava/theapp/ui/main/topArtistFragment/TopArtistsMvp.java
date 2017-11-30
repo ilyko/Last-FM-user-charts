@@ -12,8 +12,8 @@ public interface TopArtistsMvp{
 
     /** Represents the Presenter in MVP. */
     interface Presenter {
-        void getTopArtistsByPage(int pageCount);
-        void getFirstPageTopArtist();
+        void getTopArtistsByPage(int pageCount, String period);
+        void getFirstPageTopArtist(String period);
     }
 
 }

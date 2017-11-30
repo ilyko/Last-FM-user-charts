@@ -16,6 +16,7 @@ import com.slava.theapp.model.user.topArtists.TopArtists;
 import com.slava.theapp.ui.base.BaseActivity;
 import com.slava.theapp.ui.base.BaseFragment;
 import com.slava.theapp.ui.base.PaginationScrollListener;
+import com.slava.theapp.ui.main.TopListsFragmentPagerAdapter;
 import com.slava.theapp.util.Const;
 import com.slava.theapp.util.LogUtil;
 import javax.inject.Inject;
@@ -23,7 +24,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import dagger.android.support.AndroidSupportInjection;
 
-public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.View, TopArtistsAdapter.RecyclerViewClickListener {
+public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.View, TopListsFragmentPagerAdapter.PagerAdapterFragments,TopArtistsAdapter.RecyclerViewClickListener {
 
     public static int LAYOUT = R.layout.fragment_top_artists;
 
@@ -39,11 +40,11 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
 
     @Inject
     SharedPreferences sharedPreferences;
-    private final static int PER_PAGE = 30;
     private boolean isLastPage;
     private int currentPage = 0;
     private int totalPages = -1;
     private boolean isLoading = true;
+    private String period = "overall";
 
     public static TopArtistsFragment newInstance() {
         Bundle args = new Bundle();
@@ -56,11 +57,13 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (getArguments() != null) {
+            period = getArguments().getString("period");
+        }
         String user = sharedPreferences.getString(Const.ACTIVE_USER, "");
         initRv();
         presenter.setUserId(user);
-        presenter.getFirstPageTopArtist();
-
+        presenter.getFirstPageTopArtist(period);
     }
 
     void initRv() {
@@ -73,7 +76,7 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
                 currentPage++;
                 if (currentPage == totalPages) isLastPage = true;
                 mRecyclerView.post(() -> topArtistsAdapter.addLoadingFooter());
-                presenter.getTopArtistsByPage(currentPage);
+                presenter.getTopArtistsByPage(currentPage, period);
             }
 
             @Override
@@ -89,7 +92,7 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
         mRecyclerView.addOnScrollListener(scrollListener);
         RxSwipeRefreshLayout
                 .refreshes(swipeContainer)
-                .subscribe(v -> presenter.getFirstPageTopArtist());
+                .subscribe(v -> presenter.getFirstPageTopArtist(period));
         topArtistsAdapter = new TopArtistsAdapter(this);
         mRecyclerView.setAdapter(topArtistsAdapter);
     }
@@ -136,4 +139,9 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
         LogUtil.info(this, "item: " + position + " clicked");
     }
 
+    @Override
+    public void updateViewBySpinner(String period) {
+        this.period = period;
+        presenter.getFirstPageTopArtist(period);
+    }
 }

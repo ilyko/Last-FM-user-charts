@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -30,6 +31,8 @@ import com.slava.theapp.model.user.UserInfo;
 import com.slava.theapp.ui.base.BaseActivity;
 import com.slava.theapp.ui.hello.HelloActivity;
 import com.slava.theapp.util.Const;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -70,6 +73,8 @@ public class MainActivity extends BaseActivity
     @BindView(R.id.spinner_nav)
     Spinner spinner;
 
+    TopListsFragmentPagerAdapter topListsFragmentPagerAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,8 +84,11 @@ public class MainActivity extends BaseActivity
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
         initUserInfo();
-        initSpinner();
+
         initTabs();
+
+        initSpinner();
+
         //* this might be not useful, but leave it alone. *//
         fab.setOnClickListener(
                 view -> Snackbar.make(view, "Replace with your own action",
@@ -97,17 +105,31 @@ public class MainActivity extends BaseActivity
         }*/
     }
 
+    private void initTabs(){
+        topListsFragmentPagerAdapter = new TopListsFragmentPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(topListsFragmentPagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
+    }
+
     private void initSpinner() {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.period_of_time_array, R.layout.custom_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                topListsFragmentPagerAdapter.refreshData(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
-    private void initTabs(){
-        viewPager.setAdapter(new TopListsFragmentPagerAdapter(getSupportFragmentManager()));
-        tabLayout.setupWithViewPager(viewPager);
-    }
+
     private void initUserInfo(){
         View header = navigationView.getHeaderView(0);
         TextView lowerTv = header.findViewById(R.id.header_lower_tv_name);

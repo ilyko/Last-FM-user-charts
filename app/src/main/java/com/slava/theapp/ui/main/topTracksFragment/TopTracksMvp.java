@@ -7,11 +7,12 @@ public interface TopTracksMvp {
     interface View extends MvpView{
         void handleByPageResponse(TopTracks tracks);
         void handleFirstPageResponse(TopTracks tracks);
+
     }
 
     /** Represents the Presenter in MVP. */
     interface Presenter {
-        void getTopTracksByPageNumber(int pageCount);
-        void getFirstPageTopTracks();
+        void getTopTracksByPageNumber(int pageCount, String period);
+        void getFirstPageTopTracks(String period);
     }
 }

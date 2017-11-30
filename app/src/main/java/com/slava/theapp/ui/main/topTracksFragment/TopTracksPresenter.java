@@ -25,10 +25,10 @@ public class TopTracksPresenter extends BasePresenter implements TopTracksMvp.Pr
     }
 
     @Override
-    public void getTopTracksByPageNumber(int pageCount) {
+    public void getTopTracksByPageNumber(int pageCount, String period) {
         compositeDisposable.add(networkClient
                 .getApi()
-                .getUserTopTracks(perPage, pageCount, user)
+                .getUserTopTracks(perPage, pageCount, user, period)
                 .observeOn(schedulerProvider.ui())
                 .subscribeOn(schedulerProvider.io())
                 .subscribeWith(new CallbackWrapper<UserTopTracks>(view) {
@@ -41,10 +41,10 @@ public class TopTracksPresenter extends BasePresenter implements TopTracksMvp.Pr
     }
 
     @Override
-    public void getFirstPageTopTracks() {
+    public void getFirstPageTopTracks(String period) {
         compositeDisposable.add(networkClient
                 .getApi()
-                .getUserTopTracks(perPage, 1, user)
+                .getUserTopTracks(perPage, 1, user, period)
                 .observeOn(schedulerProvider.ui())
                 .subscribeOn(schedulerProvider.io())
                 .subscribeWith(new CallbackWrapper<UserTopTracks>(view) {

@@ -27,10 +27,10 @@ public class TopArtistsPresenter extends BasePresenter implements TopArtistsMvp.
 
 
     @Override
-    public void getTopArtistsByPage(int pageCount) {
+    public void getTopArtistsByPage(int pageCount, String period) {
         compositeDisposable.add(networkClient
                 .getApi()
-                .getUserTopArtists(perPage, pageCount, user)
+                .getUserTopArtists(perPage, pageCount, user, period)
                 .observeOn(schedulerProvider.ui())
                 .subscribeOn(schedulerProvider.io())
                 .subscribeWith(new CallbackWrapper<UserTopArtists>(view) {
@@ -42,10 +42,10 @@ public class TopArtistsPresenter extends BasePresenter implements TopArtistsMvp.
     }
 
     @Override
-    public void getFirstPageTopArtist(){
+    public void getFirstPageTopArtist(String period){
         compositeDisposable.add(networkClient
                 .getApi()
-                .getUserTopArtists(perPage, 1, user)
+                .getUserTopArtists(perPage, 1, user, period)
                 .observeOn(schedulerProvider.ui())
                 .subscribeOn(schedulerProvider.io())
                 .subscribeWith(new CallbackWrapper<UserTopArtists>(view) {

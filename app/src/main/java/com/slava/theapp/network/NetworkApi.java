@@ -12,15 +12,17 @@ public interface NetworkApi {
 
     @GET("?method=user.gettoptracks")
     Observable<UserTopTracks> getUserTopTracks(@Query("limit") Integer limit,
-                                           @Query("page") Integer page,
-                                           @Query("user") String user);
+                                               @Query("page") Integer page,
+                                               @Query("user") String user,
+                                               @Query("period") String period);
 
 
     //user=joanofarctan
     @GET("?method=user.gettopartists")
     Observable<UserTopArtists> getUserTopArtists(@Query("limit") int limit,
                                                  @Query("page") int page,
-                                                 @Query("user") String user);
+                                                 @Query("user") String user,
+                                                 @Query("period") String period);
 
 
     @GET("?method=user.getinfo")

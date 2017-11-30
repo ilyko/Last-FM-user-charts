@@ -8,11 +8,10 @@ import com.slava.theapp.ui.main.topArtistFragment.TopArtistsFragment;
 import com.slava.theapp.ui.main.topTracksFragment.TopTracksFragment;
 
 public class TopListsFragmentPagerAdapter extends FragmentPagerAdapter {
-
     private final int PAGE_COUNT = 2;
-    TopArtistsFragment topArtistsFragment;
-    TopTracksFragment topSongsFragment;
-    private String tabTitles[] = new String[]{"Top Artists", "Top Songs", "Top Albums"};
+    PagerAdapterFragments topArtistsFragment;
+    PagerAdapterFragments topSongsFragment;
+    private String tabTitles[] = new String[]{"Top Artists", "Top Songs"};
 
     public TopListsFragmentPagerAdapter(FragmentManager fm) {
         super(fm);
@@ -25,9 +24,9 @@ public class TopListsFragmentPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return topArtistsFragment;
+                return(Fragment) topArtistsFragment;
             case 1:
-                return topSongsFragment;
+                return (Fragment) topSongsFragment;
             default:
                 return null;
         }
@@ -41,5 +40,39 @@ public class TopListsFragmentPagerAdapter extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         return tabTitles[position];
+    }
+
+
+    public void refreshData(int position) {
+        String period;
+        switch (position) {
+            case 0:
+                period = "overall";
+                break;
+            case 1:
+                period = "7day";
+                break;
+            case 2:
+                period = "1month";
+                break;
+            case 3:
+                period = "3month";
+                break;
+            case 4:
+                period = "6month";
+                break;
+            case 5:
+                period = "12month";
+                break;
+            default:
+                period = "overall";
+
+        }
+        topArtistsFragment.updateViewBySpinner(period);
+        topSongsFragment.updateViewBySpinner(period);
+    }
+
+    public interface PagerAdapterFragments {
+        void updateViewBySpinner(String period);
     }
 }

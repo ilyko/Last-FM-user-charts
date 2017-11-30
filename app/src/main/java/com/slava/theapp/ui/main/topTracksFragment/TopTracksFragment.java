@@ -17,6 +17,7 @@ import com.slava.theapp.ui.base.BaseActivity;
 import com.slava.theapp.ui.base.BaseFragment;
 import com.slava.theapp.ui.base.PaginationScrollListener;
 
+import com.slava.theapp.ui.main.TopListsFragmentPagerAdapter;
 import com.slava.theapp.util.Const;
 import com.slava.theapp.util.LogUtil;
 
@@ -25,7 +26,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import dagger.android.support.AndroidSupportInjection;
 
-public class TopTracksFragment extends BaseFragment implements TopTracksMvp.View, TopTracksAdapter.RecyclerViewClickListener {
+public class TopTracksFragment extends BaseFragment implements TopTracksMvp.View, TopListsFragmentPagerAdapter.PagerAdapterFragments, TopTracksAdapter.RecyclerViewClickListener {
 
     TopTracksAdapter topTracksAdapter;
     public static int LAYOUT = R.layout.fragment_top_tracks;
@@ -44,6 +45,7 @@ public class TopTracksFragment extends BaseFragment implements TopTracksMvp.View
     private int currentPage = 0;
     private int totalPages = -1;
     private boolean isLoading = true;
+    private String period ="overall";
 
     //TODO refactor to base generic:
     public static TopTracksFragment newInstance() {
@@ -60,7 +62,7 @@ public class TopTracksFragment extends BaseFragment implements TopTracksMvp.View
         String user = sharedPreferences.getString(Const.ACTIVE_USER, "");
         initRv();
         presenter.setUserId(user);
-        presenter.getFirstPageTopTracks();
+        presenter.getFirstPageTopTracks(period);
 
     }
 
@@ -74,7 +76,7 @@ public class TopTracksFragment extends BaseFragment implements TopTracksMvp.View
                 currentPage++;
                 if (currentPage == totalPages) isLastPage = true;
                 mRecyclerView.post(() -> topTracksAdapter.addLoadingFooter());
-                presenter.getTopTracksByPageNumber(currentPage);
+                presenter.getTopTracksByPageNumber(currentPage, period);
             }
 
             @Override
@@ -90,7 +92,7 @@ public class TopTracksFragment extends BaseFragment implements TopTracksMvp.View
         mRecyclerView.addOnScrollListener(scrollListener);
         RxSwipeRefreshLayout
                 .refreshes(swipeContainer)
-                .subscribe(v -> presenter.getFirstPageTopTracks());
+                .subscribe(v -> presenter.getFirstPageTopTracks(period));
         topTracksAdapter = new TopTracksAdapter(this);
         mRecyclerView.setAdapter(topTracksAdapter);
     }
@@ -138,5 +140,11 @@ public class TopTracksFragment extends BaseFragment implements TopTracksMvp.View
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void updateViewBySpinner(String period) {
+        this.period = period;
+        presenter.getFirstPageTopTracks(period);
     }
 }
