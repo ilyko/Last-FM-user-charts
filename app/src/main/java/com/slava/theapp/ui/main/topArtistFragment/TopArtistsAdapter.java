@@ -42,7 +42,6 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private enum TYPE {LOADING, EMPTY, ARTIST}
 
 
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v;
@@ -71,13 +70,17 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemViewType(int position) {
-        return (position == mArtists.size() - 1 && isLoadingAdded) ? TYPE.LOADING.ordinal() : TYPE.ARTIST.ordinal();
+        if (mArtists != null && mArtists.size() != 0) {
+            return (position == mArtists.size() - 1 && isLoadingAdded) ? TYPE.LOADING.ordinal() : TYPE.ARTIST.ordinal();
+        } else {
+            return TYPE.EMPTY.ordinal();
+        }
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ArtistsViewHolder) {
-                ((ArtistsViewHolder) holder).setArtist(mArtists.get(position));
+            ((ArtistsViewHolder) holder).setArtist(mArtists.get(position));
         } else if (holder instanceof LoadingViewHolder) {
             LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
             loadingViewHolder.progressBar.setIndeterminate(true);
@@ -87,28 +90,32 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemCount() {
-        return mArtists == null ? 0 : mArtists.size();
+        return (mArtists == null || mArtists.size() == 0) ? 1 : mArtists.size();
     }
 
-    public Attr getAttr(){
+    public Attr getAttr() {
         return attr;
     }
 
     void addLoadingFooter() {
-        isLoadingAdded = true;
-        mArtists.add(new Artist());
-        notifyItemInserted(mArtists.size() - 1);
+        if (mArtists != null && mArtists.size() > 0) {
+            isLoadingAdded = true;
+            mArtists.add(new Artist());
+            notifyItemInserted(mArtists.size() - 1);
+        }
     }
 
     private void removeLoadingFooter() {
-        isLoadingAdded = false;
+        if(mArtists!=null && mArtists.size() > 0) {
+            isLoadingAdded = false;
 
-        int position = mArtists.size() - 1;
-        Artist artist = mArtists.get(position);
+            int position = mArtists.size() - 1;
+            Artist artist = mArtists.get(position);
 
-        if (artist != null) {
-            mArtists.remove(position);
-            notifyItemRemoved(position);
+            if (artist != null) {
+                mArtists.remove(position);
+                notifyItemRemoved(position);
+            }
         }
     }
 
@@ -121,7 +128,7 @@ public class TopArtistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     void handleUpdateResponse(TopArtists artists) {
         mArtists.clear();
-        LogUtil.info(this, "size: "+mArtists.size());
+        LogUtil.info(this, "size: " + mArtists.size());
         notifyDataSetChanged();
         mArtists.addAll(artists.getArtist());
         LogUtil.info(this, "size: " + mArtists.size());

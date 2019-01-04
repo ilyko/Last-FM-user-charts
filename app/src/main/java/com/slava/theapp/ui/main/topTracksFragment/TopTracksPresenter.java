@@ -47,11 +47,13 @@ public class TopTracksPresenter extends BasePresenter implements TopTracksMvp.Pr
                 .getUserTopTracks(perPage, 1, user, period)
                 .observeOn(schedulerProvider.ui())
                 .subscribeOn(schedulerProvider.io())
+                .doOnSubscribe(disposable -> view.showProgress())
                 .subscribeWith(new CallbackWrapper<UserTopTracks>(view) {
 
                     @Override
                     protected void onSuccess(UserTopTracks userTopTracks) {
                         view.handleFirstPageResponse(userTopTracks.getTopTracks());
+                        view.hideProgress();
                     }
                 }));
     }

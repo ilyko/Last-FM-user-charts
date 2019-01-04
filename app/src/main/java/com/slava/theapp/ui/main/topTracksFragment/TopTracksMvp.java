@@ -7,7 +7,8 @@ public interface TopTracksMvp {
     interface View extends MvpView{
         void handleByPageResponse(TopTracks tracks);
         void handleFirstPageResponse(TopTracks tracks);
-
+        void showProgress();
+        void hideProgress();
     }
 
     /** Represents the Presenter in MVP. */

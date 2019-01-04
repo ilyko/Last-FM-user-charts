@@ -8,6 +8,8 @@ public interface TopArtistsMvp{
     interface View extends MvpView{
         void handleByPageResponse(TopArtists artist);
         void handleFirstPageResponse(TopArtists artists);
+        void showProgress();
+        void hideProgress();
     }
 
     /** Represents the Presenter in MVP. */

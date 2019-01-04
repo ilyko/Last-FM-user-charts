@@ -9,6 +9,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.jakewharton.rxbinding2.support.v4.widget.RxSwipeRefreshLayout;
 import com.slava.theapp.R;
@@ -19,12 +20,13 @@ import com.slava.theapp.ui.base.PaginationScrollListener;
 import com.slava.theapp.ui.main.TopListsFragmentPagerAdapter;
 import com.slava.theapp.util.Const;
 import com.slava.theapp.util.LogUtil;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import dagger.android.support.AndroidSupportInjection;
 
-public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.View, TopListsFragmentPagerAdapter.PagerAdapterFragments,TopArtistsAdapter.RecyclerViewClickListener {
+public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.View, TopListsFragmentPagerAdapter.PagerAdapterFragments, TopArtistsAdapter.RecyclerViewClickListener {
 
     public static int LAYOUT = R.layout.fragment_top_artists;
 
@@ -34,6 +36,8 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
     RecyclerView mRecyclerView;
     @BindView(R.id.swipeContainer)
     SwipeRefreshLayout swipeContainer;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
 
     @Inject
     TopArtistsPresenter presenter;
@@ -103,6 +107,7 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
     }
+
     @Override
     public int getLayout() {
         return LAYOUT;
@@ -132,6 +137,18 @@ public class TopArtistsFragment extends BaseFragment implements TopArtistsMvp.Vi
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void showProgress() {
+        mRecyclerView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        mRecyclerView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override

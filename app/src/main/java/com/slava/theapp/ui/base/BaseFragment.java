@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
@@ -13,18 +14,12 @@ import butterknife.Unbinder;
  * Created by slava on 03.10.17.
  */
 
-public abstract class BaseFragment extends Fragment implements MvpView{
+public abstract class BaseFragment extends Fragment implements MvpView {
     protected String TAG = "" + getClass().getName();
     private Unbinder unbinder;
 
     public BaseFragment() {
         setArguments(new Bundle());
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
     }
 
     @Nullable
@@ -71,7 +66,6 @@ public abstract class BaseFragment extends Fragment implements MvpView{
 
     protected void restoreValue(Bundle outState) {
     }
-
 
 
     public void setBundle(Bundle bundle) {

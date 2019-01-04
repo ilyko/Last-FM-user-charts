@@ -9,8 +9,8 @@ import com.slava.theapp.ui.main.topTracksFragment.TopTracksFragment;
 
 public class TopListsFragmentPagerAdapter extends FragmentPagerAdapter {
     private final int PAGE_COUNT = 2;
-    PagerAdapterFragments topArtistsFragment;
-    PagerAdapterFragments topSongsFragment;
+    private PagerAdapterFragments topArtistsFragment;
+    private PagerAdapterFragments topSongsFragment;
     private String tabTitles[] = new String[]{"Top Artists", "Top Songs"};
 
     public TopListsFragmentPagerAdapter(FragmentManager fm) {

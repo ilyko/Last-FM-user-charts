@@ -8,7 +8,7 @@ import com.slava.theapp.ui.base.BasePresenter;
 
 import javax.inject.Inject;
 
-public class TopArtistsPresenter extends BasePresenter implements TopArtistsMvp.Presenter{
+public class TopArtistsPresenter extends BasePresenter implements TopArtistsMvp.Presenter {
 
     private int perPage = 30;
     private String user;
@@ -17,7 +17,7 @@ public class TopArtistsPresenter extends BasePresenter implements TopArtistsMvp.
     private TopArtistsMvp.View view;
 
     @Inject
-    public TopArtistsPresenter(TopArtistsMvp.View view){
+    public TopArtistsPresenter(TopArtistsMvp.View view) {
         this.view = view;
     }
 
@@ -42,16 +42,18 @@ public class TopArtistsPresenter extends BasePresenter implements TopArtistsMvp.
     }
 
     @Override
-    public void getFirstPageTopArtist(String period){
+    public void getFirstPageTopArtist(String period) {
         compositeDisposable.add(networkClient
                 .getApi()
                 .getUserTopArtists(perPage, 1, user, period)
                 .observeOn(schedulerProvider.ui())
                 .subscribeOn(schedulerProvider.io())
+                .doOnSubscribe(disposable -> view.showProgress())
                 .subscribeWith(new CallbackWrapper<UserTopArtists>(view) {
                     @Override
                     protected void onSuccess(UserTopArtists response) {
                         view.handleFirstPageResponse(response.getTopArtists());
+                        view.hideProgress();
                     }
                 }));
     }

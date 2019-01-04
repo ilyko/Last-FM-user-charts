@@ -72,8 +72,12 @@ public class TopTracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public int getItemViewType(int position) {
-        return (position == mTracks.size() - 1 && isLoadingAdded) ? TopTracksAdapter.TYPE.LOADING.ordinal() : TopTracksAdapter.TYPE.ARTIST.ordinal();
-        //return mTracks.get(position) == null ? TYPE.LOADING.ordinal() : TYPE.DATA.ordinal();
+        if (mTracks != null && mTracks.size() > 0) {
+            return (position == mTracks.size() - 1 && isLoadingAdded) ? TopTracksAdapter.TYPE.LOADING.ordinal() : TopTracksAdapter.TYPE.ARTIST.ordinal();
+            //return mTracks.get(position) == null ? TYPE.LOADING.ordinal() : TYPE.DATA.ordinal();
+        } else {
+            return TopTracksAdapter.TYPE.EMPTY.ordinal();
+        }
     }
 
     @Override
@@ -89,7 +93,7 @@ public class TopTracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public int getItemCount() {
-        return mTracks == null ? 0 : mTracks.size();
+        return (mTracks == null || mTracks.size() == 0) ? 1 : mTracks.size();
 
         /* if (!isRequest) {
             return mTracks.size() == 0 ? 1 : mTracks.size();
@@ -103,20 +107,24 @@ public class TopTracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     void addLoadingFooter() {
-        isLoadingAdded = true;
-        mTracks.add(new Track());
-        notifyItemInserted(mTracks.size() - 1);
+        if (mTracks != null && mTracks.size() > 0) {
+            isLoadingAdded = true;
+            mTracks.add(new Track());
+            notifyItemInserted(mTracks.size() - 1);
+        }
     }
 
     private void removeLoadingFooter() {
-        isLoadingAdded = false;
+        if (mTracks != null && mTracks.size() > 0) {
+            isLoadingAdded = false;
 
-        int position = mTracks.size() - 1;
-        Track track = mTracks.get(position);
+            int position = mTracks.size() - 1;
+            Track track = mTracks.get(position);
 
-        if (track != null) {
-            mTracks.remove(position);
-            notifyItemRemoved(position);
+            if (track != null) {
+                mTracks.remove(position);
+                notifyItemRemoved(position);
+            }
         }
     }
 

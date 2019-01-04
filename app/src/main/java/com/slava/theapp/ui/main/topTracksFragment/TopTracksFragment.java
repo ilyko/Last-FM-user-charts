@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.jakewharton.rxbinding2.support.v4.widget.RxSwipeRefreshLayout;
 import com.slava.theapp.R;
@@ -35,6 +36,8 @@ public class TopTracksFragment extends BaseFragment implements TopTracksMvp.View
     RecyclerView mRecyclerView;
     @BindView(R.id.swipeContainer)
     SwipeRefreshLayout swipeContainer;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
 
     @Inject
     TopTracksPresenter presenter;
@@ -140,6 +143,18 @@ public class TopTracksFragment extends BaseFragment implements TopTracksMvp.View
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void showProgress() {
+        mRecyclerView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        mRecyclerView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
