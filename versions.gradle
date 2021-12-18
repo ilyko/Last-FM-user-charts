@@ -14,7 +14,7 @@ ext {
     rxandroidVersion = '2.1.0'
     rxbinding = '2.1.1'
     dagger2Version = '2.15'
-    butterKnifeVersion = '8.8.1'
+    butterKnifeVersion = '10.2.1'
     constraintLayoutVersion = '1.1.3'
     rx2FastAndroidNetworking = '1.0.0'
     calligraphyVersion = '2.2.0'

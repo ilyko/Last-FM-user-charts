@@ -1,6 +1,6 @@
 package com.slava.theapp.network;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.slava.theapp.BuildConfig;
 import com.slava.theapp.util.LogUtil;

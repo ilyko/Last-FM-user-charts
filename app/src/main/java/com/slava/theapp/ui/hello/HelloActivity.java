@@ -4,8 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.slava.theapp.R;
-import com.slava.theapp.database.RealmService;
 import com.slava.theapp.model.user.TestUser;
 import com.slava.theapp.model.user.UserInfo;
 import com.slava.theapp.ui.base.BaseActivity;
@@ -54,8 +53,6 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
     @Inject
     CompositeDisposable compositeDisposable;
     @Inject
-    RealmService realmService;
-    @Inject
     SharedPreferences sharedPreferences;
     @Inject
     Gson gson;
@@ -90,7 +87,6 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
         testUser.setName(etName.getText().toString().trim());
         testUser.setId(testUser.hashCode());
         progressDialog.show();
-        realmService.addTestUser(testUser);
         presenter.getUserInfo(testUser.getName());
 
 /*        compositeDisposable.add(realmService
@@ -125,16 +121,6 @@ public class HelloActivity extends BaseActivity implements HelloMvp.View {
     @Override
     public int getLayout() {
         return LAYOUT;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    protected void closeRealm() {
-        realmService.closeRealm();
     }
 
     @Override

@@ -1,11 +1,11 @@
 package com.slava.theapp.ui.base;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
-import android.support.annotation.Nullable;
+import androidx.annotation.IdRes;
+import androidx.annotation.Nullable;
 
-import android.support.annotation.StringRes;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.StringRes;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.slava.theapp.util.NetworkUtils;
 
@@ -31,7 +31,6 @@ public abstract class BaseActivity extends AppCompatActivity
 
     @Override
     protected void onDestroy() {
-        closeRealm();
         if (mUnBinder != null) {
             mUnBinder.unbind();
         }
@@ -43,8 +42,6 @@ public abstract class BaseActivity extends AppCompatActivity
                 .add(containerViewId, fragment)
                 .commitAllowingStateLoss();
     }
-
-    protected abstract void closeRealm();
 
     protected abstract void setUp();
 

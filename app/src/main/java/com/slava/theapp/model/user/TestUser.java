@@ -1,14 +1,11 @@
 package com.slava.theapp.model.user;
 
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by slava on 24.10.17.
  */
 
-public class TestUser extends RealmObject {
-    @PrimaryKey
+public class TestUser {
     private long id;
     private String name;
     //private RealmList<TestSomething> user; // Declare one-to-many relationships

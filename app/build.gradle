@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 android {
-    compileSdkVersion 28
+    compileSdkVersion 30
     buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.slava.theapp"
-        minSdkVersion 16
-        targetSdkVersion 28
+        minSdkVersion 21
+        targetSdkVersion 30
         versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        versionName "1.0.0"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
         buildConfigField "String", "API_ENDPOINT", '"http://ws.audioscrobbler.com/2.0/"'
         buildConfigField "String", "API_KEY", '"7793fae26b119e636f646bd2094ebcfa"'
@@ -28,11 +28,6 @@ android {
 
 }
 apply from: '../versions.gradle'
-// Realm
-apply plugin: 'realm-android'
-realm {
-    syncEnabled = true;
-}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -74,18 +69,18 @@ dependencies {
 /*    annotationProcessor "com.github.bumptech.glide:compiler:${glideVersion}"*/
 
     //support
-    implementation "com.android.support:appcompat-v7:${supportLibraryVersion}"
-    implementation "com.android.support:cardview-v7:${supportLibraryVersion}"
-    implementation "com.android.support:support-vector-drawable:${supportLibraryVersion}"
-    implementation "com.android.support:support-v4:${supportLibraryVersion}"
-    implementation "com.android.support:recyclerview-v7:${supportLibraryVersion}"
-    implementation "com.android.support:preference-v7:${supportLibraryVersion}"
-    implementation "com.android.support:percent:${supportLibraryVersion}"
-    implementation "com.android.support:design:${supportLibraryVersion}"
-    implementation "com.android.support:gridlayout-v7:${supportLibraryVersion}"
-    implementation "com.android.support:palette-v7:${supportLibraryVersion}"
-    implementation "com.android.support.constraint:constraint-layout:${constraintLayoutVersion}"
-    implementation "com.android.support:support-v4:${supportLibraryVersion}"
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.vectordrawable:vectordrawable:1.0.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.preference:preference:1.0.0'
+    implementation 'androidx.percentlayout:percentlayout:1.0.0'
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'androidx.gridlayout:gridlayout:1.0.0'
+    implementation 'androidx.palette:palette:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.12'
     compileOnly 'javax.annotation:jsr250-api:1.0'
 }
